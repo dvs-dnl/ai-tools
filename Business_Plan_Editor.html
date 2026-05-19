@@ -1,0 +1,1652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Business Plan Editor — AI Tools Brand</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green: #1B4332;
+    --green-mid: #2D6A4F;
+    --green-light: #52B788;
+    --gold: #D4A017;
+    --gold-light: #F0C040;
+    --cream: #FAF7F2;
+    --cream-dark: #F0EAE0;
+    --cream-darker: #E5DDD0;
+    --charcoal: #1C2B33;
+    --charcoal-soft: #344A56;
+    --muted: #6B8491;
+    --muted-soft: #9AAEB8;
+    --white: #FFFFFF;
+    --danger: #C0392B;
+    --radius: 10px;
+    --radius-sm: 6px;
+    --shadow: 0 2px 16px rgba(27,67,50,0.09);
+    --shadow-strong: 0 6px 24px rgba(27,67,50,0.18);
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  }
+
+  html { font-size: 16px; }
+  html, body { height: 100%; overflow: hidden; }
+
+  body {
+    background: var(--cream);
+    color: var(--charcoal);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.55;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── HEADER ─────────────────────────────────────────── */
+  header.app-bar {
+    background: var(--green);
+    color: var(--cream);
+    padding: 0.7rem 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    flex-shrink: 0;
+    border-bottom: 3px solid var(--gold);
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-width: 0;
+  }
+  .brand-mark {
+    width: 32px; height: 32px;
+    background: var(--gold);
+    color: var(--green);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.05rem;
+    flex-shrink: 0;
+  }
+  .brand-title {
+    font-size: 0.98rem;
+    font-weight: 700;
+    letter-spacing: -0.005em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .brand-sub {
+    font-size: 0.76rem;
+    opacity: 0.7;
+    margin-top: 1px;
+  }
+
+  /* Mode toggle */
+  .mode-toggle {
+    display: inline-flex;
+    background: rgba(255,255,255,0.10);
+    border-radius: 999px;
+    padding: 3px;
+  }
+  .mode-toggle button {
+    border: none;
+    background: transparent;
+    color: rgba(250,247,242,0.7);
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 0.32rem 0.85rem;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s;
+  }
+  .mode-toggle button:hover { color: var(--cream); }
+  .mode-toggle button.active {
+    background: var(--gold);
+    color: var(--green);
+  }
+
+  /* Action buttons */
+  .actions {
+    margin-left: auto;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .btn {
+    border: 1px solid rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.06);
+    color: var(--cream);
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 0.42rem 0.85rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, transform 0.05s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    white-space: nowrap;
+  }
+  .btn:hover { background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.3); }
+  .btn:active { transform: translateY(1px); }
+  .btn.primary {
+    background: var(--gold);
+    color: var(--green);
+    border-color: var(--gold);
+  }
+  .btn.primary:hover { background: var(--gold-light); border-color: var(--gold-light); }
+  .btn.ghost {
+    background: transparent;
+    border-color: transparent;
+    color: rgba(250,247,242,0.8);
+  }
+  .btn.ghost:hover { background: rgba(255,255,255,0.10); color: var(--cream); }
+
+  /* ── BODY LAYOUT ────────────────────────────────────── */
+  .workspace {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /* Sidebar (TOC) */
+  aside.toc {
+    width: 260px;
+    background: var(--cream-dark);
+    border-right: 1px solid var(--cream-darker);
+    overflow-y: auto;
+    padding: 1rem 0.6rem 1.5rem;
+    flex-shrink: 0;
+  }
+  aside.toc .toc-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0.2rem 0.6rem 0.6rem;
+  }
+  .toc-item {
+    display: block;
+    padding: 0.42rem 0.7rem;
+    font-size: 0.86rem;
+    color: var(--charcoal-soft);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    border: none;
+    background: none;
+    text-align: left;
+    width: 100%;
+    line-height: 1.35;
+    transition: background 0.12s, color 0.12s;
+  }
+  .toc-item:hover { background: var(--cream); color: var(--charcoal); }
+  .toc-item.active {
+    background: var(--green);
+    color: var(--cream);
+    font-weight: 600;
+  }
+  .toc-item.h2 { padding-left: 0.7rem; font-weight: 600; }
+  .toc-item.h3 { padding-left: 1.4rem; font-size: 0.8rem; color: var(--muted); }
+  .toc-item.h4 { padding-left: 2.0rem; font-size: 0.76rem; color: var(--muted-soft); }
+  .toc-item.active.h3, .toc-item.active.h4 { color: var(--cream); }
+
+  /* Center area */
+  .panes {
+    flex: 1;
+    display: flex;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .pane {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .pane + .pane { border-left: 1px solid var(--cream-darker); }
+  .pane.hidden { display: none; }
+
+  .pane-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0.55rem 1rem;
+    background: var(--cream-dark);
+    border-bottom: 1px solid var(--cream-darker);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-shrink: 0;
+  }
+  .pane-label .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--green-light);
+  }
+  .pane-label.preview .dot { background: var(--gold); }
+
+  /* Toolbar */
+  .toolbar {
+    background: var(--cream);
+    border-bottom: 1px solid var(--cream-darker);
+    padding: 0.4rem 0.6rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2rem;
+    flex-shrink: 0;
+  }
+  .tb-btn {
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--charcoal-soft);
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.32rem 0.55rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background 0.12s, color 0.12s, border-color 0.12s;
+    min-width: 30px;
+    font-family: var(--mono);
+  }
+  .tb-btn:hover { background: var(--cream-dark); color: var(--charcoal); border-color: var(--cream-darker); }
+  .tb-divider {
+    width: 1px;
+    background: var(--cream-darker);
+    margin: 0.2rem 0.25rem;
+  }
+
+  /* Editor */
+  textarea.editor {
+    flex: 1;
+    width: 100%;
+    border: none;
+    outline: none;
+    resize: none;
+    padding: 1.2rem 1.5rem;
+    font-family: var(--mono);
+    font-size: 0.86rem;
+    line-height: 1.65;
+    color: var(--charcoal);
+    background: var(--white);
+    tab-size: 2;
+  }
+  textarea.editor::selection { background: rgba(212,160,23,0.28); }
+
+  /* Preview */
+  .preview {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.6rem 2rem 4rem;
+    background: var(--white);
+    scroll-behavior: smooth;
+  }
+  .preview-inner {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  .preview h1, .preview h2, .preview h3, .preview h4 {
+    color: var(--green);
+    line-height: 1.25;
+    font-weight: 700;
+  }
+  .preview h1 {
+    font-size: 1.85rem;
+    margin: 0.4rem 0 0.6rem;
+    letter-spacing: -0.015em;
+  }
+  .preview h2 {
+    font-size: 1.35rem;
+    margin: 2rem 0 0.7rem;
+    padding-bottom: 0.35rem;
+    border-bottom: 2px solid var(--cream-darker);
+  }
+  .preview h3 {
+    font-size: 1.08rem;
+    margin: 1.4rem 0 0.55rem;
+    color: var(--green-mid);
+  }
+  .preview h4 {
+    font-size: 0.95rem;
+    margin: 1.1rem 0 0.45rem;
+    color: var(--charcoal);
+    font-weight: 700;
+  }
+  .preview p { margin: 0.65rem 0; color: var(--charcoal); }
+  .preview strong { color: var(--green); font-weight: 700; }
+  .preview em { font-style: italic; color: var(--charcoal-soft); }
+  .preview a { color: var(--green-mid); text-decoration: underline; text-underline-offset: 2px; }
+  .preview ul, .preview ol { margin: 0.65rem 0 0.65rem 1.4rem; }
+  .preview li { margin: 0.25rem 0; }
+  .preview hr {
+    border: none;
+    border-top: 1px solid var(--cream-darker);
+    margin: 1.6rem 0;
+  }
+  .preview blockquote {
+    border-left: 3px solid var(--gold);
+    padding: 0.5rem 1rem;
+    margin: 0.8rem 0;
+    background: var(--cream);
+    color: var(--charcoal-soft);
+    font-style: italic;
+  }
+  .preview code {
+    background: var(--cream-dark);
+    color: var(--green);
+    padding: 0.1rem 0.35rem;
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: 0.85em;
+  }
+  .preview table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+    box-shadow: var(--shadow);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+  .preview th, .preview td {
+    padding: 0.6rem 0.8rem;
+    text-align: left;
+    border-bottom: 1px solid var(--cream-darker);
+  }
+  .preview th {
+    background: var(--green);
+    color: var(--cream);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+  .preview tr:last-child td { border-bottom: none; }
+  .preview tr:nth-child(even) td { background: var(--cream); }
+  .preview .anchor-target { scroll-margin-top: 12px; }
+
+  /* ── FOOTER / STATUS ────────────────────────────────── */
+  footer.status {
+    background: var(--charcoal);
+    color: var(--cream);
+    padding: 0.4rem 1.2rem;
+    font-size: 0.76rem;
+    display: flex;
+    gap: 1.2rem;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  footer.status .sep { opacity: 0.3; }
+  footer.status .right { margin-left: auto; opacity: 0.85; }
+  footer.status .save-state {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  footer.status .save-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--green-light);
+  }
+  footer.status .save-dot.dirty { background: var(--gold); }
+
+  /* ── TOAST ──────────────────────────────────────────── */
+  .toast {
+    position: fixed;
+    bottom: 2.4rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--charcoal);
+    color: var(--cream);
+    padding: 0.7rem 1.2rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-strong);
+    font-size: 0.86rem;
+    font-weight: 500;
+    opacity: 0;
+    transition: opacity 0.25s, transform 0.25s;
+    pointer-events: none;
+    z-index: 1000;
+    border-left: 3px solid var(--gold);
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ── MODAL ──────────────────────────────────────────── */
+  .modal-bg {
+    position: fixed; inset: 0;
+    background: rgba(28,43,51,0.55);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+  }
+  .modal-bg.show { display: flex; }
+  .modal {
+    background: var(--white);
+    border-radius: var(--radius);
+    max-width: 480px;
+    width: 90%;
+    padding: 1.5rem 1.6rem;
+    box-shadow: var(--shadow-strong);
+  }
+  .modal h3 {
+    color: var(--green);
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+  .modal p {
+    color: var(--charcoal-soft);
+    font-size: 0.9rem;
+    margin-bottom: 1.1rem;
+  }
+  .modal-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+  }
+  .modal-actions .btn {
+    color: var(--charcoal);
+    border-color: var(--cream-darker);
+    background: var(--cream);
+  }
+  .modal-actions .btn:hover { background: var(--cream-dark); }
+  .modal-actions .btn.danger {
+    background: var(--danger);
+    color: var(--white);
+    border-color: var(--danger);
+  }
+  .modal-actions .btn.danger:hover { opacity: 0.92; }
+
+  /* ── RESPONSIVE ──────────────────────────────────────── */
+  @media (max-width: 900px) {
+    aside.toc { display: none; }
+    .brand-sub { display: none; }
+    .panes.split .pane { flex: 1; }
+  }
+  @media (max-width: 640px) {
+    header.app-bar { flex-wrap: wrap; gap: 0.6rem; padding: 0.6rem 0.8rem; }
+    .actions { margin-left: 0; width: 100%; justify-content: space-between; }
+    .btn { font-size: 0.76rem; padding: 0.35rem 0.6rem; }
+    .mode-toggle button { font-size: 0.76rem; padding: 0.28rem 0.7rem; }
+  }
+
+  /* Print: render preview clean */
+  @media print {
+    header.app-bar, aside.toc, footer.status, .toolbar, .pane-label, .mode-toggle, .actions { display: none !important; }
+    .pane.editor-pane { display: none !important; }
+    .workspace, .panes, .pane.preview-pane { display: block !important; overflow: visible !important; height: auto !important; }
+    html, body { overflow: visible !important; height: auto !important; background: white !important; }
+    .preview { padding: 0; overflow: visible !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="app-bar">
+  <div class="brand">
+    <div class="brand-mark">B</div>
+    <div>
+      <div class="brand-title">Business Plan Editor</div>
+      <div class="brand-sub">AI Tools Brand · 2026–2029</div>
+    </div>
+  </div>
+
+  <div class="mode-toggle" role="tablist" aria-label="View mode">
+    <button data-mode="edit" type="button">Edit</button>
+    <button data-mode="split" type="button" class="active">Split</button>
+    <button data-mode="preview" type="button">Preview</button>
+  </div>
+
+  <div class="actions">
+    <button class="btn ghost" id="btn-load" title="Load a .md file from your computer">Load .md</button>
+    <button class="btn ghost" id="btn-reset" title="Reset to the original business plan">Reset</button>
+    <button class="btn ghost" id="btn-print" title="Print or save as PDF">Print</button>
+    <button class="btn" id="btn-copy">Copy MD</button>
+    <button class="btn" id="btn-export-html">Export HTML</button>
+    <button class="btn primary" id="btn-export-md">Download .md</button>
+  </div>
+</header>
+
+<div class="workspace">
+  <aside class="toc" id="toc">
+    <div class="toc-label">Contents</div>
+    <div id="toc-list"></div>
+  </aside>
+
+  <div class="panes split" id="panes">
+    <section class="pane editor-pane" id="editor-pane">
+      <div class="pane-label">
+        <span class="dot"></span>
+        Markdown source
+      </div>
+      <div class="toolbar" role="toolbar" aria-label="Formatting">
+        <button class="tb-btn" data-action="h1" title="Heading 1">H1</button>
+        <button class="tb-btn" data-action="h2" title="Heading 2">H2</button>
+        <button class="tb-btn" data-action="h3" title="Heading 3">H3</button>
+        <div class="tb-divider"></div>
+        <button class="tb-btn" data-action="bold" title="Bold">B</button>
+        <button class="tb-btn" data-action="italic" title="Italic"><em>I</em></button>
+        <button class="tb-btn" data-action="code" title="Inline code">&lt;/&gt;</button>
+        <div class="tb-divider"></div>
+        <button class="tb-btn" data-action="ul" title="Bullet list">• List</button>
+        <button class="tb-btn" data-action="ol" title="Numbered list">1. List</button>
+        <button class="tb-btn" data-action="quote" title="Quote">❝</button>
+        <div class="tb-divider"></div>
+        <button class="tb-btn" data-action="link" title="Link">Link</button>
+        <button class="tb-btn" data-action="table" title="Insert table">Table</button>
+        <button class="tb-btn" data-action="hr" title="Horizontal rule">―</button>
+      </div>
+      <textarea class="editor" id="editor" spellcheck="true" autocomplete="off"></textarea>
+    </section>
+
+    <section class="pane preview-pane" id="preview-pane">
+      <div class="pane-label preview">
+        <span class="dot"></span>
+        Live preview
+      </div>
+      <div class="preview" id="preview"><div class="preview-inner" id="preview-inner"></div></div>
+    </section>
+  </div>
+</div>
+
+<footer class="status">
+  <span class="save-state"><span class="save-dot" id="save-dot"></span><span id="save-text">Saved locally</span></span>
+  <span class="sep">·</span>
+  <span><b id="word-count">0</b> words</span>
+  <span class="sep">·</span>
+  <span><b id="reading-time">0</b> min read</span>
+  <span class="sep">·</span>
+  <span><b id="section-count">0</b> sections</span>
+  <span class="right">Tip: changes auto-save to this browser · Cmd/Ctrl-S to download</span>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<div class="modal-bg" id="modal-bg">
+  <div class="modal">
+    <h3 id="modal-title">Reset to original?</h3>
+    <p id="modal-body">This will discard your changes and restore the original business plan. This cannot be undone.</p>
+    <div class="modal-actions">
+      <button class="btn" id="modal-cancel" type="button">Cancel</button>
+      <button class="btn danger" id="modal-confirm" type="button">Reset</button>
+    </div>
+  </div>
+</div>
+
+<!-- Original markdown embedded so the editor works offline with no external file -->
+<script type="text/markdown" id="seed-md">
+# AI-Powered Tool Distribution Brand — Business Plan
+### One-Person Operation | Honest Assessment | 2026–2029
+
+---
+
+## Executive Summary
+
+This is a plan for a one-person brand that uses Claude AI to research topics deeply and package that research into free, interactive HTML tools — distributed through relevant online communities and hosted at essentially zero cost. The tools give people who aren't yet AI power users the same quality of decision-support that someone with deep AI fluency gets for free.
+
+The core thesis: there is a meaningful and growing gap between people who have *heard of* AI and people who use it as a genuine research and decision tool. That gap is the market. The window to build authority, trust, and audience by serving that gap is real, but it is not indefinitely open. This plan is written to help one person make actual decisions — not to raise money, not to impress anyone, but to figure out what this is, what it can become, and how to build it without burning out.
+
+**Honest summary of what this can be:** A modest but real side income ($10K–$40K/year by year two) combined with a durable niche authority that has optionality — either as an ongoing lifestyle business or as a platform for something larger. It is not a path to $500K/year as a solo operator unless something breaks through in an unusual way. The realistic version is slower, more interesting, and more durable than most people's projections.
+
+---
+
+## 1. Market Opportunity — Honest Assessment
+
+### The AI Adoption Gap
+
+The headline numbers on AI adoption are misleading. "Awareness" and "occasional use" dominate the statistics. As of early 2026, survey data consistently shows:
+
+- Roughly 60–70% of U.S. adults are aware of tools like ChatGPT or Claude
+- 30–40% have tried one at least once
+- Fewer than 10–12% use AI tools daily in any meaningful capacity
+- Fewer than 3–5% use AI as a genuine research, synthesis, or decision-support tool in the way that constitutes real leverage
+
+The gap between "has tried ChatGPT" and "uses AI to deeply research a topic and produce a structured decision framework" is enormous — and most people in that gap don't know what they're missing. They've asked a chatbot a question, gotten a mediocre answer, and concluded that AI is overhyped. They haven't seen what a skilled operator can extract from a model like Claude on a topic they care deeply about.
+
+This is the actual market: people who want quality information and decision support on real topics (overlanding builds, homesteading systems, first-time homebuying, legal navigation, personal finance tradeoffs) but who aren't yet equipped to get it from AI themselves.
+
+### Why Pre-Built Tooling Wins Right Now
+
+There are three reasons why packaged, pre-built tools win in this specific moment:
+
+**1. The activation energy problem.** Even people who have access to AI rarely know how to prompt it well enough to get research-quality output. A well-built interactive tool eliminates that friction entirely. The user doesn't need to know how to prompt; they need to fill in a form and read a result.
+
+**2. Trust and curation.** A tool built by someone who visibly knows their domain — and who has already done the deep research, identified the edge cases, and structured the output usefully — is trusted differently than a raw AI response. The brand is the human layer on top of the AI. That matters enormously right now, when people are still learning what to trust.
+
+**3. Community credibility.** On a forum or subreddit, a free, expert-quality tool dropped by someone who is clearly a subject-matter contributor gets engaged with in a way that a link to "ask ChatGPT about this" never will. The tool is a tangible artifact. It can be bookmarked, shared, and referenced. It builds a reputation in a community over time.
+
+### The First-Mover Window
+
+This window is real but finite. A reasonable estimate of how long it lasts: **18–36 months from now**, depending on how quickly AI gets embedded in browsers, phones, and search engines in a way that is actually usable by non-technical people.
+
+The window closes when one of the following happens:
+- AI search (Perplexity, Google AI Mode, Bing Copilot) becomes genuinely good at niche, nuanced, decision-support queries
+- Mobile AI becomes conversational enough that a non-technical person can get quality research output without any skill
+- AI-native communities form around these topics, eliminating the gap between AI haves and have-nots
+
+None of those have happened fully yet. They are happening gradually. The window to build audience and authority before they do is probably 2–3 years. After that, the brand needs to be something the audience comes back to — not because it's the only place to get this information, but because it's the best-organized, most trusted version of it.
+
+---
+
+## 2. Business Model Options — Realistic and Ranked
+
+### Model A: Pure Public Good / Audience Building
+
+**What it is:** No monetization. Build tools, drop them in communities, build a following and reputation. The value is entirely in audience, trust, and optionality.
+
+**Revenue potential:** Zero directly. Substantial indirectly — this approach seeds every other model.
+
+**Effort:** Medium. Building and distributing tools takes real time. Managing no monetization layer simplifies operations significantly.
+
+**Fit for one-person operation:** High. No overhead, no sponsor management, no customer service.
+
+**When it makes sense:** This is the correct mode for the first 3–6 months regardless of what other models get added later. You cannot sell sponsorships on a brand with no track record. You cannot pitch affiliate programs without traffic. You cannot charge for commissions without a portfolio. Model A is not optional — it is the foundation.
+
+**Risk:** Unsustainable as the *only* model indefinitely. The risk is not that it fails to make money — it's that without any monetization signal, motivation erodes before the audience is large enough to leverage.
+
+---
+
+### Model B: "Supported by" Sponsorship
+
+**What it is:** A relevant brand in each tool's category sponsors the tool with tasteful placement — "This tool is supported by [Brand]." The tool stays free and unbiased.
+
+**Revenue potential:** $200–$800 per tool per sponsor cycle (90-day commitment) at the niche level. At scale with 30+ tools across 8–10 categories, potentially $2,000–$6,000/quarter from sponsorships alone. The math does not pencil to life-changing money quickly.
+
+**Effort:** High relative to revenue, especially early. Finding, pitching, and managing sponsors for niche tools requires relationship-building that is genuinely time-consuming for one person.
+
+**Fit for one-person operation:** Moderate. The pitching and account management overhead is real. Works best when sponsors approach you (inbound), which happens when the audience is already established.
+
+**When it becomes viable:** Month 6–12, after you have demonstrable traffic and community engagement. Before that, you'll spend an hour pitching for every $150 you earn.
+
+**What makes a sponsor want in:** A sponsor for "The Overlanding Build Planner" wants:
+- Evidence that their audience (gear buyers, truck owners) uses the tool
+- A simple, tasteful placement that doesn't compromise the tool's credibility
+- Low friction — you handle everything, they just send a check
+- Ideally, the sponsor is a brand the tool builder already knows and uses
+
+**Risk:** Sponsorship can erode community trust fast if it looks like a sellout or if the sponsor's product conflicts with the tool's recommendations. Keep the placement minimal, the sponsor genuinely relevant, and never let sponsors influence tool content.
+
+---
+
+### Model C: Affiliate Integration
+
+**What it is:** Tools naturally reference products, resources, and services. Where those references are genuinely useful, add affiliate links (Amazon Associates, specific brand programs, financial products, etc.).
+
+**Revenue potential:** This is the most realistic early-stage revenue for this operation. Ranges:
+
+| Traffic Level | Monthly Tool Visitors | Est. Affiliate Revenue/Month |
+|---|---|---|
+| Low (early stage) | 500–2,000 | $50–$200 |
+| Medium (6–12 months in) | 5,000–15,000 | $400–$1,200 |
+| Growth (18+ months) | 20,000–60,000 | $1,500–$5,000 |
+
+These are honest niche affiliate ranges. Not passive income fantasy numbers. Not pessimistic. The conversion rates on well-placed, contextual affiliate links in a trusted tool are meaningfully better than banner ads — but you need traffic volume to feel them.
+
+**Effort:** Low ongoing once set up. The links go into the tool at build time. Maintenance is minimal unless products change or programs terminate.
+
+**Fit for one-person operation:** Very high. This is the best effort-to-revenue ratio of any model early on, and it scales with traffic rather than with your active time.
+
+**When it becomes viable:** Almost immediately. Even at 500 visitors per tool, a well-placed affiliate link (a specific part, book, or service) earns something. Not much — but it starts building the habit of thinking about monetization from the start.
+
+**Risk:** Trust erosion is the primary risk. The moment a tool feels like a shopping funnel rather than a decision tool, community trust collapses. The rule: only link to things you would genuinely recommend to a friend. Disclose clearly. Never optimize recommendations for commission rate.
+
+---
+
+### Model D: Premium / Paid Tier
+
+**What it is:** Free tools publicly. A paid membership (Patreon or similar) for people who want more tools faster, custom requests, access to a community, or behind-the-scenes content on how the tools are built.
+
+**Revenue potential:**
+
+| Tier | Price | Members Needed for $1K/Mo | Members Needed for $3K/Mo |
+|---|---|---|---|
+| Supporter | $5/mo | 200 | 600 |
+| Member | $10/mo | 100 | 300 |
+| Power User | $25/mo | 40 | 120 |
+
+Getting to 100 paying members is genuinely achievable within 12–18 months if the brand is consistently good. It requires community presence and consistent output.
+
+**Effort:** High. Running a paid community well is its own job. Subscribers expect consistent value. At $10/month, members will churn if you miss two delivery cycles.
+
+**Fit for one-person operation:** Moderate to low until you have strong systems. One person cannot build tools, distribute them, and manage a premium community simultaneously without things slipping.
+
+**When it makes sense:** 12+ months in, when you know what members actually want and have the operational capacity to deliver. Launching a paid tier too early with too few members creates more obligation than income.
+
+**What members actually get:**
+- Early access to tools before public distribution
+- A monthly custom tool built on a member-voted topic
+- Access to a private channel (Discord or forum) where the builder is present
+- Behind-the-scenes content: how a tool was researched, what got cut, what didn't work
+
+---
+
+### Model E: Custom Tool Commissions
+
+**What it is:** A business, nonprofit, or community pays to have a custom tool built for their specific audience. A hunting outfitter pays for "The Montana Elk Hunt Planning Tool." A credit union pays for a first-time homebuyer tool branded for their members.
+
+**Revenue potential:** $500–$2,500 per tool depending on complexity and client type. Nonprofits will push toward $500. Small businesses toward $800–$1,500. Mid-size organizations toward $2,000–$2,500.
+
+**Effort:** High per engagement. Scoping, building, revising, and delivering a custom tool takes 8–20 hours depending on complexity. Client management adds time. Scope creep is real.
+
+**Fit for one-person operation:** Low volume only. Two or three commissions per quarter is manageable. More than that starts eating into the core brand-building work.
+
+**What makes a good commission client:**
+- They have a clear, specific audience and use case
+- They understand what a tool is (not a web app, not a database, not a CMS)
+- They pay 50% upfront
+- They do not have a committee that needs to approve every decision
+
+**Pricing structure:** Flat rate per tool. Simple scope document. One round of revisions included. Additional revisions billed at an hourly rate ($75–$100/hr is reasonable for this work). No ongoing maintenance unless separately contracted.
+
+**Risk:** Commissions will always feel more urgent than brand-building work, because they have a named client and a deadline. Managing the balance is the core operational discipline of adding this model.
+
+---
+
+### Model F: Licensing / White-Label
+
+**What it is:** Organizations pay a recurring fee to embed or white-label a tool on their site. A faith network pays $150/month to have the homestead planning tool live on their community site with their branding.
+
+**Revenue potential:** Low per client, but recurring. $100–$300/month per white-label. Getting to 10 clients is genuinely possible; getting to 50 is a different business entirely.
+
+**Effort:** Moderate. The tool is already built. White-labeling requires some technical work (removing brand elements, adjusting styling) and a simple licensing agreement.
+
+**Fit for one-person operation:** Good once tools are built. Poor during the build phase.
+
+**When it makes sense:** Year 2, when there's a library of tools and inbound interest from organizations who want them.
+
+**Risk:** Most small nonprofits and community organizations have no budget. Pitching them is a time sink. The sweet spot is small businesses with a clear audience overlap — they have budget and a real reason to want the tool on their site.
+
+---
+
+### Recommended Model Combination
+
+**Launch (months 1–6):** Model A + Model C
+- Build and distribute tools. Affiliate links where genuinely applicable. No other overhead.
+- Goal: establish presence in 3–5 communities, publish 15–25 tools, build the first real traffic baseline.
+
+**Growth (months 6–18):** Model A + Model C + selective Model E
+- Add 2–3 custom commissions per quarter when inquiries come in organically.
+- Begin tracking which tool categories get the most engagement — these are the candidates for sponsorship outreach.
+- Affiliate revenue should be covering basic operating costs ($100–$400/month) by month 12.
+
+**Scale (months 18–36):** All models active, prioritized
+- Model C: running passively, optimized
+- Model E: 2–3 commissions/quarter, referred or inbound only
+- Model D: launch a paid tier at month 18 if community engagement is strong
+- Model B: pursue 1–2 sponsorships in top-performing categories
+- Model F: opportunistic, not actively pitched
+
+---
+
+## 3. Revenue Projections — Realistic, Not Optimistic
+
+### Assumptions
+
+- Tools are distributed primarily through Reddit, niche forums, and Facebook groups
+- No paid advertising
+- Traffic is primarily referral-based (community drops) with modest organic search growth after 6+ months
+- Affiliate revenue is the primary revenue driver in year 1
+
+### Conservative Scenario
+
+*Building slowly, inconsistent distribution, 1–2 tools/month*
+
+| Metric | Year 1 | Year 2 |
+|---|---|---|
+| Tools published | 12–18 | 25–35 |
+| Monthly visitors (all tools combined) | 1,500–4,000 | 5,000–12,000 |
+| Affiliate revenue | $600–$1,800 | $2,400–$6,000 |
+| Custom commissions (1–2/yr) | $800–$2,000 | $1,500–$3,500 |
+| Sponsorships | $0 | $0–$1,200 |
+| Paid tier | $0 | $0–$1,200 |
+| **Total annual revenue** | **$1,400–$3,800** | **$3,900–$11,900** |
+
+### Moderate Scenario
+
+*Consistent 2–3 tools/month, active community distribution, one category breaks through*
+
+| Metric | Year 1 | Year 2 |
+|---|---|---|
+| Tools published | 24–36 | 40–55 |
+| Monthly visitors (all tools combined) | 6,000–18,000 | 18,000–40,000 |
+| Affiliate revenue | $2,400–$6,000 | $8,000–$18,000 |
+| Custom commissions (3–5/yr) | $2,500–$6,000 | $4,000–$10,000 |
+| Sponsorships | $0–$2,000 | $2,000–$6,000 |
+| Paid tier | $0 | $3,600–$9,600 |
+| **Total annual revenue** | **$4,900–$14,000** | **$17,600–$43,600** |
+
+### Growth Scenario
+
+*3–4 tools/month, one tool goes viral in a large community (100K+ members), strong SEO pickup*
+
+| Metric | Year 1 | Year 2 |
+|---|---|---|
+| Tools published | 35–50 | 50–70 |
+| Monthly visitors (all tools combined) | 20,000–60,000 | 60,000–150,000 |
+| Affiliate revenue | $6,000–$18,000 | $20,000–$50,000 |
+| Custom commissions | $5,000–$10,000 | $8,000–$20,000 |
+| Sponsorships | $2,000–$5,000 | $6,000–$15,000 |
+| Paid tier | $0–$5,000 | $10,000–$25,000 |
+| **Total annual revenue** | **$13,000–$38,000** | **$44,000–$110,000** |
+
+### The honest expectation:
+
+Most first-year operations land between conservative and moderate. The growth scenario requires a genuine breakout moment — a single tool that gets picked up by a large community, referenced in a major thread, or linked from a high-traffic site. These happen, but they cannot be planned; they can only be made more likely by publishing more tools, distributing them consistently, and building real credibility in the communities where they're shared.
+
+**Plan for moderate. Hope for growth. Don't bet on growth.**
+
+The realistic year-one answer for this operation is probably $3,000–$12,000 in revenue. Year two is the first year where this starts to feel like a real income source. Knowing this upfront is not discouraging — it means the first year is about building the asset (the tool library, the audience, the distribution relationships), not about the income.
+
+---
+
+## 4. The First-Mover Window
+
+This is the most strategically important section of this plan.
+
+### What changes when AI is ubiquitous?
+
+In 2–3 years, a reasonably tech-comfortable person will be able to ask their phone a detailed question about overlanding builds and get something close to what your tool currently offers — with no prior prompting skill required. AI will be embedded in search, in browsers, in messaging apps. The raw capability gap will close.
+
+**What this means:** The value of "I built this so you don't have to use AI yourself" decreases as using AI yourself gets easier. The first-mover window is specifically the window between now and when that frictionless AI access becomes widespread and reliable for non-technical users.
+
+### What remains durable after the window closes?
+
+Three things survive mainstream AI adoption:
+
+**1. Curated trust and community authority.** If your brand has been present in the overlanding community for three years, has dropped 40 tools that people found genuinely useful, and has a reputation for being thorough and non-commercial — that is not replicable by an AI assistant. The AI can generate content; it cannot generate trust that was earned over time in a specific community.
+
+**2. The organized and structured library.** The Wikipedia parallel is apt. Wikipedia's value isn't access to information — it's the organized, structured, community-validated version of information. If your tool library becomes the organized, searchable, referenced resource for a given topic (homesteading systems, off-road builds, first-generation homebuyers), it has value beyond any individual tool. A user who trusts your library comes back when they have a new question — even if they could theoretically get the same answer elsewhere.
+
+**3. The distribution network.** Relationships with moderators, trusted members in key communities, newsletter subscribers, and returning users are a genuine asset. An AI assistant embedded in someone's browser doesn't have that. Building the distribution layer (even a modest email list of 5,000 engaged users) is building something that persists regardless of how good AI gets.
+
+### The strategic implication:
+
+The goal in the first 18 months is not just to publish tools — it is to build the infrastructure that survives the window closing:
+- A recognizable brand identity that people search for by name
+- An email list (even a small one) of people who've opted into future tools
+- A reputation as the person/resource that a given community recommends to newcomers
+- A library organized well enough to be discoverable through search (not just through community drops)
+
+When AI is ubiquitous, the question won't be "how do I get this information?" — it will be "who has organized this information in a way I trust?" That is a buildable asset. It takes time, not technology.
+
+---
+
+## 5. Operational Model — One Person
+
+### Time Investment Per Tool
+
+A realistic breakdown of hours per tool at full quality:
+
+| Phase | Hours |
+|---|---|
+| Topic selection and scoping | 0.5–1 |
+| Deep research session with Claude | 1–2 |
+| Tool architecture and UX design | 1–2 |
+| HTML/CSS/JS build | 2–4 |
+| Review, testing, edge-case handling | 1–2 |
+| Distribution (writing posts, community engagement) | 1–2 |
+| **Total per tool** | **6.5–13 hours** |
+
+At a sustainable pace of 10 hours/week on this project, that's 1–1.5 tools per week, or roughly 4–6 tools per month. Quality will vary. Some tools will come together in 6 hours; complex, data-heavy tools may take 15+.
+
+### What Breaks First
+
+**Quality** breaks first, not volume. The temptation as you find distribution success is to publish faster. Resist this. The moment a tool ships with a logical error, bad math, or shallow research, community members notice — and niche communities have long memories. One bad tool can undo the reputation built by ten good ones.
+
+After quality, **distribution consistency** breaks. The tools that get no traction are usually the ones dropped once with no follow-up. Staying present in communities — answering questions, refining the tool based on feedback, participating in conversations beyond the tool drop — is genuinely time-consuming and is the first thing that gets cut when the build pipeline is full.
+
+After distribution: **community management**. If the brand grows, people will start asking questions, suggesting improvements, and wanting to interact. That's a good problem, but it consumes time that was previously going to building.
+
+### What to Outsource First (When There's Budget)
+
+In order of priority:
+1. **HTML/CSS polish and responsive design** — The research and architecture are the proprietary value. The front-end execution can be templated or outsourced to a freelancer once the template language is established. ($50–$150 per tool for template-based execution is reasonable.)
+2. **Distribution scheduling and community posting** — A virtual assistant can handle the mechanical work of posting in communities, responding to common questions, and tracking engagement. Not strategy — execution.
+3. **SEO and site organization** — Getting tools discoverable through organic search is not a one-time task. A few hours per month from someone focused on this compounds over time.
+
+Do not outsource research, architecture, or the brand voice. Those are the product.
+
+---
+
+## 6. Risk Factors
+
+### AI Commoditization
+
+**Risk level:** High, 2–4 year horizon
+
+This is the primary existential risk. When a non-technical person can get equivalent quality output by talking to their phone, the "access gap" value proposition disappears. The mitigation is building the trust and organization infrastructure described in Section 4 before this happens. If you've built a trusted library with a recognizable brand, you're competing on reputation, not on access. That's a winnable competition.
+
+### Platform Risk
+
+**Risk level:** Medium, ongoing
+
+Reddit, Facebook, and niche forums all have the ability to change what they allow, how visible promotional posts are, or whether they continue to exist. Any single community-based distribution strategy is fragile. The mitigation is diversification: no more than 25% of traffic from any single community, an email list that doesn't depend on any platform, and SEO as a long-term organic channel that is platform-independent. An email list of 2,000 engaged subscribers is worth more than 50,000 monthly visitors from a single subreddit.
+
+### Quality Drift
+
+**Risk level:** Medium, increases with volume
+
+As output volume increases, the temptation is to do shallower research, ship less-tested tools, and recycle frameworks that worked before. This is how most content brands die — not dramatically, but gradually, as the quality that earned the early audience slowly erodes.
+
+The mitigation is a personal quality standard — a checklist that every tool goes through before it ships — and the willingness to publish fewer tools rather than compromise on depth. One excellent tool per week beats two mediocre ones, every time.
+
+### Burnout
+
+**Risk level:** Medium-high for solo operators
+
+One person doing research, building, distributing, and managing community while also maintaining a personal life is a real constraint. The romantic version of this project — doing what you love, building something meaningful, maintaining flexibility — is real, but it coexists with long stretches of unglamorous work that nobody sees.
+
+Mitigation: build in quarterly reviews. Is this still worth it? Am I producing things I'm proud of? Is the audience growing? If two of three answers are yes, continue. If all three are no, reassess the pace, the scope, or whether to continue at all. Sustainability requires honest self-assessment, not just momentum.
+
+### Legal Exposure
+
+**Risk level:** Low to medium, category-dependent
+
+Tools in financial, legal, medical, and safety-sensitive domains carry real liability if someone acts on bad output. A tax planning tool that gives incorrect information; a load-bearing calculation for a homestead structure; a legal guide with jurisdiction errors. The mitigation:
+
+- Prominent, specific disclaimers on every tool in these categories ("This tool is for educational purposes and general planning only. It is not legal/financial/medical advice. Verify all information with a licensed professional before making decisions.")
+- Build in explicit uncertainty — tools should flag where answers depend on individual circumstances and direct users to consult a professional
+- Avoid false precision — don't output a specific number when a range with a caveat is more honest
+- In genuinely high-stakes domains (medical, structural), consider whether the tool is appropriate at all
+
+Disclaimers won't eliminate liability risk entirely, but they substantially reduce it for good-faith educational tools. Running through a free attorney consultation on the site's terms and legal language is a one-time investment worth making before year one is out.
+
+---
+
+## 7. 90-Day Launch Plan and 3-Year Arc
+
+### Days 1–30: Foundation and First Drops
+
+**What to build:**
+- 4–6 tools across 3–4 different categories. Don't over-index on one niche in the first month; test which categories produce the most engagement.
+- Suggested mix: one automotive/off-road, one homesteading/land, one personal finance, one outdoor recreation
+- Build a simple, clean static site with a clear purpose statement, a categorized library, and a contact form. GitHub Pages or Cloudflare Pages. Nothing that costs money.
+- Set up an email capture. Even a Substack or a simple ConvertKit free tier. Every tool page should have a single, low-friction invite: "Get new tools when they're published."
+
+**Distribution:**
+- Identify 2–3 subreddits and 1–2 forums per category where this tool genuinely belongs
+- Drop tools as contributions, not promotions. The framing matters: "I built this because I kept seeing this question come up — figured I'd make it easier to answer." That tone is the correct one.
+- Engage substantively with every comment in the first 48 hours. Reply, refine, thank people for feedback.
+
+**Success indicators at day 30:**
+- 4+ tools published
+- At least one tool that generated 50+ upvotes or equivalent engagement in a community
+- First 50 email subscribers
+- Basic site live and navigable
+
+### Days 31–90: Second Wave and First Learning
+
+**What to build:**
+- 8–12 additional tools. Begin revisiting the categories from the first month that showed the strongest engagement.
+- Start building the template / system — a reusable architecture for common tool types (calculators, decision trees, comparison grids, step-by-step planners). This is where operational efficiency compounds.
+
+**Distribution:**
+- Expand to Facebook groups and niche forums (not just Reddit)
+- Begin tracking what gets shared organically — tools that get cross-posted or shared without your involvement are your early signals of genuine resonance
+- Reach out to 2–3 community moderators or influential members in your best-performing categories. Not to pitch — just to introduce yourself and ask what questions come up most often. Relationships here are worth more than any individual post.
+
+**Monetization:**
+- Add Amazon affiliate links to your first 3–5 tools where genuinely applicable
+- Note the first affiliate conversions — even $20 is a signal that the model works
+
+**Success indicators at day 90:**
+- 12–18 tools published
+- 200–500 email subscribers
+- At least one tool category with consistent engagement
+- First affiliate revenue (even small)
+- A sense of which topics produce the most engagement and which fall flat
+
+---
+
+### Year 1: Volume, Audience, and the First Revenue Signal
+
+**Operational targets:**
+- 30–40 tools published by year end
+- 1,000–3,000 email subscribers
+- Consistent monthly visitors in the range of 5,000–15,000 across all tools
+- A recognizable presence in at least 3–5 communities where you are known as "the person who makes those tools"
+
+**Monetization targets:**
+- Affiliate revenue: $100–$500/month by Q4 of year one
+- 1–2 custom commissions completed (inbound or warm outreach)
+- No paid tier yet — focus on building the audience that would support one
+
+**What to learn:**
+- Which tool categories have the best engagement-to-effort ratio
+- Which communities are worth maintaining presence in vs. which are one-time drop audiences
+- Whether the email list is actually growing or stagnating (and why)
+- What people ask for that you haven't built yet
+
+**What to drop:**
+- Any category that consistently underperforms. Not every topic works. Cut the ones that don't, double down on the ones that do.
+
+---
+
+### Year 2: The Business Becomes Visible
+
+**This is the year where the operation starts to look like something real.**
+
+- Tool library has depth: 50–70 tools, organized, searchable, with a clear brand identity
+- Email list: 3,000–8,000 subscribers (if consistently nurtured)
+- Traffic: beginning to see meaningful organic search traffic from people finding tools directly, not just from community drops
+- Revenue: a combination of affiliate, commissions, and possibly a new paid tier beginning to add up to a real number — the moderate scenario puts this at $15K–$40K for the year
+
+**Key moves in year two:**
+- Launch a paid membership tier if community engagement supports it
+- Pursue 2–3 sponsorship relationships in the top-performing categories
+- Begin building the brand's SEO infrastructure: tool pages that rank for specific queries, a few long-form pieces that explain the methodology, a brand name that surfaces in search
+
+**The question year two answers:** Is this a brand people seek out, or a brand people find by accident? The answer determines what year three looks like.
+
+---
+
+### Year 3: Durable Asset or Pivot Point
+
+**If years 1 and 2 went well**, year three looks like this:
+
+- 80–120 tools across 8–12 categories
+- 8,000–25,000 email subscribers
+- Monthly traffic: 40,000–100,000 across the library
+- Revenue: $40,000–$100,000/year (moderate-to-growth scenario)
+- The brand is findable by name. People recommend it in communities without being prompted.
+- Custom commission inquiries are inbound, not outbound
+- A paid membership has 200–500 active subscribers
+
+**The three-year decision point:**
+
+At this point, the brand is a genuine asset. The options:
+
+1. **Continue as a lifestyle business** — sustainable, growing slowly, meaningful income for part-time work. This is an entirely valid outcome.
+2. **Expand with help** — bring in a part-time collaborator (researcher, builder, or community manager) to increase output without burning out
+3. **Exit or partner** — the brand has real value to a media company, a tools platform, or an adjacent business. Not a get-rich scenario, but a real option.
+
+What makes year three go well is not a breakthrough moment — it's consistent, disciplined execution in years one and two. The compounding of a trusted library, an engaged email list, and a known brand identity is not fast, but it is real.
+
+---
+
+## Closing Assessment
+
+This is a genuinely good idea executed at exactly the right moment. The market gap is real. The distribution method is sound. The cost structure is nearly zero. The risk profile is low relative to most business models — no capital required, no employees, no physical inventory, and the primary input (Claude + your research skill) is already in place.
+
+The honest ceiling for a solo operator in years one and two is a solid side income with optionality. The path to something larger exists, but it runs through consistent execution, community trust, and the patient accumulation of an audience — not through a clever marketing play or a viral moment.
+
+The discipline this business requires is not technical. It's the discipline of publishing consistently when nobody is watching, distributing methodically when traction is slow, and maintaining quality when speed is tempting. That's the whole game. The operators who build something durable are the ones who stay methodical when it's boring, not just passionate when it's exciting.
+
+Build the library. Earn the trust. Don't rush the money. The money follows the trust.
+
+---
+
+*Document prepared May 2026 | Intended for internal planning use | Not a pitch document*
+</script>
+
+<script>
+(function () {
+  'use strict';
+
+  // ── State ──────────────────────────────────────────────
+  const STORAGE_KEY = 'biz-plan-editor-v1';
+  const SEED = document.getElementById('seed-md').textContent.replace(/^\n/, '').replace(/\s+$/, '\n');
+  const editor = document.getElementById('editor');
+  const preview = document.getElementById('preview-inner');
+  const previewScroll = document.getElementById('preview');
+  const tocList = document.getElementById('toc-list');
+  const saveDot = document.getElementById('save-dot');
+  const saveText = document.getElementById('save-text');
+  const wordEl = document.getElementById('word-count');
+  const readEl = document.getElementById('reading-time');
+  const sectionsEl = document.getElementById('section-count');
+  const panes = document.getElementById('panes');
+  const editorPane = document.getElementById('editor-pane');
+  const previewPane = document.getElementById('preview-pane');
+  const toast = document.getElementById('toast');
+
+  let saveTimer = null;
+  let headings = []; // [{level,text,id,line}]
+
+  // ── Markdown parser (minimal but capable) ──────────────
+  function escapeHTML(s) {
+    return s.replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+  }
+
+  function slugify(text) {
+    return text.toLowerCase()
+      .replace(/[^\w\s-]/g, '')
+      .trim()
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .slice(0, 80) || 'section';
+  }
+
+  function inlineMD(s) {
+    // escape first
+    s = escapeHTML(s);
+    // inline code
+    s = s.replace(/`([^`]+?)`/g, '<code>$1</code>');
+    // bold: ** or __
+    s = s.replace(/\*\*([^*]+?)\*\*/g, '<strong>$1</strong>');
+    s = s.replace(/__([^_]+?)__/g, '<strong>$1</strong>');
+    // italic: * or _  (avoid matching inside words for _ )
+    s = s.replace(/(^|[^*])\*([^*\n]+?)\*(?!\*)/g, '$1<em>$2</em>');
+    s = s.replace(/(^|[^_\w])_([^_\n]+?)_(?!\w)/g, '$1<em>$2</em>');
+    // links [text](url)
+    s = s.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+    return s;
+  }
+
+  function renderMD(md) {
+    const lines = md.split('\n');
+    let html = '';
+    let i = 0;
+    headings = [];
+    const usedIds = {};
+
+    function nextHeadingId(text) {
+      let base = slugify(text);
+      let id = base;
+      let n = 2;
+      while (usedIds[id]) id = base + '-' + (n++);
+      usedIds[id] = true;
+      return id;
+    }
+
+    while (i < lines.length) {
+      const raw = lines[i];
+      const line = raw;
+      const trimmed = line.trim();
+
+      // blank
+      if (trimmed === '') { i++; continue; }
+
+      // hr
+      if (/^(-{3,}|_{3,}|\*{3,})\s*$/.test(trimmed)) {
+        html += '<hr>'; i++; continue;
+      }
+
+      // heading
+      const hMatch = /^(#{1,6})\s+(.*)$/.exec(trimmed);
+      if (hMatch) {
+        const lvl = hMatch[1].length;
+        const text = hMatch[2].replace(/\s+#+\s*$/, '');
+        const id = nextHeadingId(text);
+        headings.push({ level: lvl, text, id, line: i });
+        html += `<h${lvl} id="${id}" class="anchor-target">${inlineMD(text)}</h${lvl}>`;
+        i++; continue;
+      }
+
+      // table (must have header then separator)
+      if (/^\|.*\|$/.test(trimmed) && i + 1 < lines.length && /^\|?\s*:?-{3,}/.test(lines[i+1].trim())) {
+        const headerCells = splitTableRow(trimmed);
+        const aligns = splitTableRow(lines[i+1].trim()).map(c => {
+          const left = c.startsWith(':');
+          const right = c.endsWith(':');
+          if (left && right) return 'center';
+          if (right) return 'right';
+          if (left) return 'left';
+          return '';
+        });
+        let table = '<table><thead><tr>';
+        headerCells.forEach((c, idx) => {
+          table += `<th${aligns[idx] ? ` style="text-align:${aligns[idx]}"` : ''}>${inlineMD(c.trim())}</th>`;
+        });
+        table += '</tr></thead><tbody>';
+        i += 2;
+        while (i < lines.length && /^\|.*\|$/.test(lines[i].trim())) {
+          const row = splitTableRow(lines[i].trim());
+          table += '<tr>';
+          row.forEach((c, idx) => {
+            table += `<td${aligns[idx] ? ` style="text-align:${aligns[idx]}"` : ''}>${inlineMD(c.trim())}</td>`;
+          });
+          table += '</tr>';
+          i++;
+        }
+        table += '</tbody></table>';
+        html += table; continue;
+      }
+
+      // blockquote
+      if (/^>\s?/.test(trimmed)) {
+        let block = '';
+        while (i < lines.length && /^>\s?/.test(lines[i].trim())) {
+          block += lines[i].replace(/^\s*>\s?/, '') + '\n';
+          i++;
+        }
+        html += '<blockquote>' + inlineMD(block.trim()).replace(/\n/g, '<br>') + '</blockquote>';
+        continue;
+      }
+
+      // unordered list
+      if (/^[-*+]\s+/.test(trimmed)) {
+        let block = '<ul>';
+        while (i < lines.length && /^[-*+]\s+/.test(lines[i].trim())) {
+          const t = lines[i].trim().replace(/^[-*+]\s+/, '');
+          block += '<li>' + inlineMD(t) + '</li>';
+          i++;
+        }
+        block += '</ul>';
+        html += block; continue;
+      }
+
+      // ordered list
+      if (/^\d+\.\s+/.test(trimmed)) {
+        let block = '<ol>';
+        while (i < lines.length && /^\d+\.\s+/.test(lines[i].trim())) {
+          const t = lines[i].trim().replace(/^\d+\.\s+/, '');
+          block += '<li>' + inlineMD(t) + '</li>';
+          i++;
+        }
+        block += '</ol>';
+        html += block; continue;
+      }
+
+      // paragraph (until blank line / new block element)
+      let para = [];
+      while (i < lines.length) {
+        const t = lines[i];
+        const tt = t.trim();
+        if (tt === '') break;
+        if (/^#{1,6}\s+/.test(tt)) break;
+        if (/^(-{3,}|_{3,}|\*{3,})\s*$/.test(tt)) break;
+        if (/^[-*+]\s+/.test(tt)) break;
+        if (/^\d+\.\s+/.test(tt)) break;
+        if (/^>\s?/.test(tt)) break;
+        if (/^\|.*\|$/.test(tt)) break;
+        para.push(t);
+        i++;
+      }
+      if (para.length) {
+        html += '<p>' + inlineMD(para.join(' ').trim()) + '</p>';
+      }
+    }
+    return html;
+  }
+
+  function splitTableRow(row) {
+    // strip leading/trailing pipes, then split
+    let r = row.trim();
+    if (r.startsWith('|')) r = r.slice(1);
+    if (r.endsWith('|')) r = r.slice(0, -1);
+    return r.split('|');
+  }
+
+  // ── TOC ────────────────────────────────────────────────
+  function buildTOC() {
+    tocList.innerHTML = '';
+    if (!headings.length) {
+      tocList.innerHTML = '<div style="padding:0.6rem; color:var(--muted); font-size:0.82rem;">No headings yet.</div>';
+      return;
+    }
+    headings.forEach(h => {
+      const btn = document.createElement('button');
+      btn.className = 'toc-item h' + h.level;
+      btn.textContent = h.text;
+      btn.dataset.id = h.id;
+      btn.dataset.line = h.line;
+      btn.addEventListener('click', () => {
+        // scroll preview
+        const el = preview.querySelector('#' + CSS.escape(h.id));
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // also move editor caret to that line
+        const pos = lineOffset(editor.value, h.line);
+        editor.focus();
+        editor.setSelectionRange(pos, pos);
+        scrollEditorToLine(h.line);
+        markActiveTOC(h.id);
+      });
+      tocList.appendChild(btn);
+    });
+  }
+
+  function markActiveTOC(id) {
+    tocList.querySelectorAll('.toc-item').forEach(el => {
+      el.classList.toggle('active', el.dataset.id === id);
+    });
+  }
+
+  function lineOffset(text, lineNum) {
+    let pos = 0;
+    const lines = text.split('\n');
+    for (let i = 0; i < lineNum && i < lines.length; i++) pos += lines[i].length + 1;
+    return pos;
+  }
+
+  function scrollEditorToLine(lineNum) {
+    // approximate by line-height
+    const cs = getComputedStyle(editor);
+    const lh = parseFloat(cs.lineHeight) || 22;
+    const pad = parseFloat(cs.paddingTop) || 0;
+    editor.scrollTop = Math.max(0, lineNum * lh - editor.clientHeight * 0.3 + pad);
+  }
+
+  // ── Stats ──────────────────────────────────────────────
+  function updateStats(md) {
+    const words = (md.match(/\b[\w'-]+\b/g) || []).length;
+    wordEl.textContent = words.toLocaleString();
+    readEl.textContent = Math.max(1, Math.round(words / 220));
+    sectionsEl.textContent = headings.filter(h => h.level === 2).length;
+  }
+
+  // ── Render pipeline ────────────────────────────────────
+  function render() {
+    const md = editor.value;
+    preview.innerHTML = renderMD(md);
+    buildTOC();
+    updateStats(md);
+  }
+
+  // ── Save / load ────────────────────────────────────────
+  function setSaveState(state) {
+    if (state === 'dirty') {
+      saveDot.classList.add('dirty');
+      saveText.textContent = 'Unsaved…';
+    } else if (state === 'saving') {
+      saveText.textContent = 'Saving…';
+    } else {
+      saveDot.classList.remove('dirty');
+      const now = new Date();
+      saveText.textContent = 'Saved · ' + now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    }
+  }
+
+  function scheduleSave() {
+    setSaveState('dirty');
+    if (saveTimer) clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      try {
+        localStorage.setItem(STORAGE_KEY, editor.value);
+        setSaveState('saved');
+      } catch (e) {
+        saveText.textContent = 'Local save failed (storage unavailable)';
+      }
+    }, 500);
+  }
+
+  function loadFromStorage() {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored && stored.trim().length > 0) {
+        editor.value = stored;
+        return true;
+      }
+    } catch (e) { /* ignore */ }
+    return false;
+  }
+
+  // ── Export ─────────────────────────────────────────────
+  function downloadFile(filename, content, mime) {
+    const blob = new Blob([content], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 0);
+  }
+
+  function exportHTML() {
+    const title = (headings[0] && headings[0].text) || 'Business Plan';
+    const body = renderMD(editor.value);
+    const css = `
+      body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#1C2B33;background:#FAF7F2;line-height:1.6;max-width:780px;margin:2.5rem auto;padding:0 1.5rem 4rem;}
+      h1,h2,h3,h4{color:#1B4332;line-height:1.25;}
+      h1{font-size:2rem;margin-bottom:.5rem;}
+      h2{font-size:1.4rem;margin:2rem 0 .7rem;padding-bottom:.3rem;border-bottom:2px solid #E5DDD0;}
+      h3{font-size:1.1rem;margin:1.4rem 0 .55rem;color:#2D6A4F;}
+      h4{font-size:.98rem;margin:1.1rem 0 .45rem;}
+      p{margin:.65rem 0;}
+      strong{color:#1B4332;}
+      em{color:#344A56;}
+      a{color:#2D6A4F;}
+      ul,ol{margin:.65rem 0 .65rem 1.4rem;}
+      li{margin:.25rem 0;}
+      hr{border:none;border-top:1px solid #E5DDD0;margin:1.6rem 0;}
+      blockquote{border-left:3px solid #D4A017;padding:.5rem 1rem;margin:.8rem 0;background:#F0EAE0;color:#344A56;font-style:italic;}
+      code{background:#F0EAE0;color:#1B4332;padding:.1rem .35rem;border-radius:4px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85em;}
+      table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.92rem;box-shadow:0 2px 16px rgba(27,67,50,0.09);border-radius:6px;overflow:hidden;}
+      th,td{padding:.6rem .8rem;text-align:left;border-bottom:1px solid #E5DDD0;}
+      th{background:#1B4332;color:#FAF7F2;font-weight:600;}
+      tr:nth-child(even) td{background:#FAF7F2;}
+      tr:last-child td{border-bottom:none;}
+    `;
+    const doc = `<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${escapeHTML(title)}</title><style>${css}</style></head><body>${body}</body></html>`;
+    const fname = slugify(title) + '.html';
+    downloadFile(fname, doc, 'text/html;charset=utf-8');
+    showToast('Exported ' + fname);
+  }
+
+  function exportMD() {
+    const title = (headings[0] && headings[0].text) || 'Business Plan';
+    downloadFile(slugify(title) + '.md', editor.value, 'text/markdown;charset=utf-8');
+    showToast('Downloaded .md');
+  }
+
+  function copyMD() {
+    navigator.clipboard.writeText(editor.value).then(
+      () => showToast('Markdown copied to clipboard'),
+      () => showToast('Copy failed — your browser may not allow it')
+    );
+  }
+
+  // ── Toast ──────────────────────────────────────────────
+  let toastTimer = null;
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
+  }
+
+  // ── Modal ──────────────────────────────────────────────
+  const modalBg = document.getElementById('modal-bg');
+  const modalTitle = document.getElementById('modal-title');
+  const modalBody = document.getElementById('modal-body');
+  const modalCancel = document.getElementById('modal-cancel');
+  const modalConfirm = document.getElementById('modal-confirm');
+  let modalResolve = null;
+  function confirmDialog(title, body, confirmLabel) {
+    modalTitle.textContent = title;
+    modalBody.textContent = body;
+    modalConfirm.textContent = confirmLabel || 'Confirm';
+    modalBg.classList.add('show');
+    return new Promise(resolve => { modalResolve = resolve; });
+  }
+  modalCancel.addEventListener('click', () => { modalBg.classList.remove('show'); modalResolve && modalResolve(false); });
+  modalConfirm.addEventListener('click', () => { modalBg.classList.remove('show'); modalResolve && modalResolve(true); });
+  modalBg.addEventListener('click', (e) => {
+    if (e.target === modalBg) { modalBg.classList.remove('show'); modalResolve && modalResolve(false); }
+  });
+
+  // ── Toolbar actions ────────────────────────────────────
+  function getSel() {
+    return { start: editor.selectionStart, end: editor.selectionEnd, value: editor.value };
+  }
+  function applySel(newText, selStart, selEnd) {
+    editor.value = newText;
+    editor.setSelectionRange(selStart, selEnd);
+    editor.focus();
+    onInput();
+  }
+  function wrap(open, close) {
+    const { start, end, value } = getSel();
+    const selected = value.slice(start, end) || 'text';
+    const before = value.slice(0, start);
+    const after = value.slice(end);
+    const inserted = open + selected + close;
+    applySel(before + inserted + after, before.length + open.length, before.length + open.length + selected.length);
+  }
+  function prefixLines(prefix) {
+    const { start, end, value } = getSel();
+    const lineStart = value.lastIndexOf('\n', start - 1) + 1;
+    const lineEnd = end + (value.slice(end).indexOf('\n') === -1 ? value.length - end : value.slice(end).indexOf('\n'));
+    const segment = value.slice(lineStart, lineEnd);
+    const replaced = segment.split('\n').map(l => l.length ? prefix + l : prefix).join('\n');
+    const newVal = value.slice(0, lineStart) + replaced + value.slice(lineEnd);
+    applySel(newVal, lineStart, lineStart + replaced.length);
+  }
+  function heading(level) {
+    const { start, value } = getSel();
+    const lineStart = value.lastIndexOf('\n', start - 1) + 1;
+    const lineEndIdx = value.indexOf('\n', lineStart);
+    const lineEnd = lineEndIdx === -1 ? value.length : lineEndIdx;
+    let line = value.slice(lineStart, lineEnd);
+    line = line.replace(/^#{1,6}\s+/, '');
+    const newLine = '#'.repeat(level) + ' ' + (line || 'Heading');
+    const newVal = value.slice(0, lineStart) + newLine + value.slice(lineEnd);
+    applySel(newVal, lineStart + newLine.length, lineStart + newLine.length);
+  }
+  function insertBlock(block) {
+    const { start, end, value } = getSel();
+    let before = value.slice(0, start);
+    let after = value.slice(end);
+    // ensure surrounding blank lines
+    if (before.length && !before.endsWith('\n\n')) before += before.endsWith('\n') ? '\n' : '\n\n';
+    if (after.length && !after.startsWith('\n\n')) after = (after.startsWith('\n') ? '\n' : '\n\n') + after;
+    const newVal = before + block + after;
+    applySel(newVal, before.length, before.length + block.length);
+  }
+
+  document.querySelectorAll('.tb-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const action = btn.dataset.action;
+      switch (action) {
+        case 'h1': heading(1); break;
+        case 'h2': heading(2); break;
+        case 'h3': heading(3); break;
+        case 'bold': wrap('**', '**'); break;
+        case 'italic': wrap('*', '*'); break;
+        case 'code': wrap('`', '`'); break;
+        case 'ul': prefixLines('- '); break;
+        case 'ol': prefixLines('1. '); break;
+        case 'quote': prefixLines('> '); break;
+        case 'link': {
+          const url = prompt('URL', 'https://');
+          if (!url) return;
+          const { start, end, value } = getSel();
+          const text = value.slice(start, end) || 'link text';
+          const before = value.slice(0, start);
+          const after = value.slice(end);
+          const inserted = `[${text}](${url})`;
+          applySel(before + inserted + after, before.length + 1, before.length + 1 + text.length);
+          break;
+        }
+        case 'table':
+          insertBlock('| Column 1 | Column 2 | Column 3 |\n|---|---|---|\n| Row 1 | data | data |\n| Row 2 | data | data |');
+          break;
+        case 'hr':
+          insertBlock('---');
+          break;
+      }
+    });
+  });
+
+  // ── Mode toggle ────────────────────────────────────────
+  document.querySelectorAll('.mode-toggle button').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.mode-toggle button').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      const m = b.dataset.mode;
+      editorPane.classList.toggle('hidden', m === 'preview');
+      previewPane.classList.toggle('hidden', m === 'edit');
+    });
+  });
+
+  // ── Actions ────────────────────────────────────────────
+  document.getElementById('btn-export-md').addEventListener('click', exportMD);
+  document.getElementById('btn-export-html').addEventListener('click', exportHTML);
+  document.getElementById('btn-copy').addEventListener('click', copyMD);
+  document.getElementById('btn-print').addEventListener('click', () => window.print());
+  document.getElementById('btn-reset').addEventListener('click', async () => {
+    const ok = await confirmDialog('Reset to original?', 'This will discard your changes and restore the original business plan. This cannot be undone.', 'Reset');
+    if (!ok) return;
+    editor.value = SEED;
+    onInput();
+    try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    showToast('Restored original');
+  });
+  document.getElementById('btn-load').addEventListener('click', () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.md,.markdown,.txt,text/markdown,text/plain';
+    input.addEventListener('change', () => {
+      const file = input.files && input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        editor.value = String(reader.result || '');
+        onInput();
+        showToast('Loaded ' + file.name);
+      };
+      reader.readAsText(file);
+    });
+    input.click();
+  });
+
+  // ── Input handlers ─────────────────────────────────────
+  function onInput() {
+    render();
+    scheduleSave();
+  }
+  editor.addEventListener('input', onInput);
+
+  // Tab key inserts two spaces
+  editor.addEventListener('keydown', (e) => {
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      const { start, end, value } = getSel();
+      const insert = '  ';
+      editor.value = value.slice(0, start) + insert + value.slice(end);
+      editor.setSelectionRange(start + insert.length, start + insert.length);
+      onInput();
+    }
+    // Cmd/Ctrl-S downloads
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 's') {
+      e.preventDefault();
+      exportMD();
+    }
+    // Cmd/Ctrl-B bold, Cmd/Ctrl-I italic
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'b') { e.preventDefault(); wrap('**','**'); }
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'i') { e.preventDefault(); wrap('*','*'); }
+  });
+
+  // Highlight TOC item as user scrolls preview
+  previewScroll.addEventListener('scroll', () => {
+    const top = previewScroll.scrollTop + 20;
+    const items = headings.map(h => preview.querySelector('#' + CSS.escape(h.id))).filter(Boolean);
+    let active = null;
+    for (const el of items) {
+      if (el.offsetTop <= top) active = el; else break;
+    }
+    if (active) markActiveTOC(active.id);
+  });
+
+  // ── Init ───────────────────────────────────────────────
+  const had = loadFromStorage();
+  if (!had) editor.value = SEED;
+  render();
+  setSaveState(had ? 'saved' : 'saved');
+  if (had) showToast('Restored your last edits from this browser');
+
+  // Warn on unload if unsaved (very rare given autosave)
+  window.addEventListener('beforeunload', (e) => {
+    if (saveDot.classList.contains('dirty')) {
+      e.preventDefault();
+      e.returnValue = '';
+    }
+  });
+})();
+</script>
+</body>
+</html>

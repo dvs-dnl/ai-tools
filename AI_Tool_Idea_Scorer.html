@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Tool Idea Scorer — FieldKit</title>
+<style>
+:root {
+  --bg:       #0d1117;
+  --surface:  #161b22;
+  --surface2: #21262d;
+  --border:   #30363d;
+  --border2:  #484f58;
+  --text:     #e6edf3;
+  --muted:    #8b949e;
+  --accent:   #58a6ff;
+  --accent-bg: rgba(88,166,255,0.08);
+  --accent-border: rgba(88,166,255,0.3);
+  --green:    #3fb950;
+  --yellow:   #e3b341;
+  --orange:   #db6d28;
+  --red:      #f85149;
+  --shadow:   0 8px 32px rgba(0,0,0,0.4);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font: 14px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  min-height: 100vh;
+}
+
+/* ── Layout ── */
+.wrap {
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 20px 24px 48px;
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.logo { display: flex; align-items: center; gap: 11px; }
+.logo-mark {
+  width: 34px; height: 34px;
+  background: var(--accent-bg);
+  border: 1px solid var(--accent-border);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; line-height: 1;
+  flex-shrink: 0;
+}
+.logo-name { font-size: 15px; font-weight: 700; letter-spacing: -0.02em; }
+.logo-sub  { font-size: 11px; color: var(--muted); margin-top: -1px; }
+.header-right { display: flex; align-items: center; gap: 8px; }
+.header-date { font-size: 11px; color: var(--muted); margin-right: 8px; }
+
+/* ── Buttons ── */
+.btn {
+  padding: 7px 14px;
+  border-radius: 6px;
+  font: 600 12px/1 inherit;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--text);
+  transition: background 0.1s, border-color 0.1s, color 0.1s;
+  white-space: nowrap;
+}
+.btn:hover { border-color: var(--border2); background: #2d333b; }
+.btn:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
+.btn-accent { background: var(--accent); border-color: var(--accent); color: #0d1117; font-weight: 700; }
+.btn-accent:hover { background: #79b8ff; border-color: #79b8ff; }
+.btn-ghost { background: transparent; border-color: transparent; color: var(--muted); }
+.btn-ghost:hover { color: var(--text); background: var(--surface2); border-color: var(--border); }
+.btn-danger { color: var(--red); border-color: rgba(248,81,73,0.25); background: transparent; }
+.btn-danger:hover { background: rgba(248,81,73,0.08); border-color: var(--red); }
+
+/* ── Idea Input ── */
+.idea-row { margin-bottom: 20px; }
+.field-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.idea-input {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font: 600 17px/1 inherit;
+  padding: 12px 16px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.idea-input::placeholder { color: var(--muted); font-weight: 400; font-size: 15px; }
+.idea-input:focus { border-color: var(--accent); }
+
+/* ── Main Grid ── */
+.main-grid {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 20px;
+  align-items: start;
+}
+
+/* ── Dimensions Column ── */
+.dims-col { display: flex; flex-direction: column; gap: 10px; }
+
+.dim-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+  transition: border-color 0.15s;
+}
+.dim-card:focus-within { border-color: var(--accent-border); }
+
+.dim-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.dim-num {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--muted);
+  margin-top: 2px;
+  flex-shrink: 0;
+  width: 16px;
+}
+.dim-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  flex: 1;
+  line-height: 1.3;
+}
+.dim-weight {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--accent-bg);
+  border: 1px solid var(--accent-border);
+  padding: 2px 7px;
+  border-radius: 100px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.score-row {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 8px;
+}
+
+.score-btn {
+  flex: 1;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--muted);
+  cursor: pointer;
+  font: 600 13px/1 inherit;
+  padding: 8px 2px;
+  text-align: center;
+  transition: background 0.1s, border-color 0.1s, color 0.1s, transform 0.07s;
+  position: relative;
+}
+.score-btn:hover { border-color: var(--border2); color: var(--text); }
+.score-btn:active { transform: scale(0.94); }
+.score-btn:focus { outline: 2px solid var(--accent); outline-offset: 2px; z-index: 1; }
+.score-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #0d1117;
+  font-weight: 800;
+}
+
+.score-desc {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.45;
+  padding: 7px 9px;
+  background: var(--surface2);
+  border-radius: 5px;
+  border-left: 2px solid var(--accent-border);
+  min-height: 38px;
+  transition: opacity 0.1s;
+}
+.score-desc strong { color: var(--text); }
+.score-desc.preview { opacity: 0.65; border-left-color: var(--border2); }
+
+/* ── Right Panel ── */
+.right-col {
+  position: sticky;
+  top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+}
+.panel-title {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+/* ── Radar Chart ── */
+.radar-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 4px 0;
+}
+#radarSvg { width: 100%; max-width: 296px; }
+
+/* ── Score Display ── */
+.score-row-main {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.score-big {
+  font-size: 56px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  transition: color 0.3s;
+}
+.score-denom { font-size: 18px; color: var(--muted); margin-bottom: 8px; margin-left: 3px; }
+.score-label-right { font-size: 12px; color: var(--muted); text-align: right; line-height: 1.3; }
+
+.progress-track {
+  width: 100%;
+  height: 6px;
+  background: var(--surface2);
+  border-radius: 100px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 100px;
+  transition: width 0.35s cubic-bezier(.4,0,.2,1), background-color 0.3s;
+}
+
+/* ── Breakdown ── */
+.breakdown-rows { display: flex; flex-direction: column; }
+.br-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border);
+}
+.br-row:last-child { border: none; }
+.br-num  { font-size: 10px; color: var(--border2); width: 12px; flex-shrink: 0; }
+.br-name { flex: 1; font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.br-score{ font-size: 12px; font-weight: 700; color: var(--text); width: 22px; text-align: right; flex-shrink: 0; }
+.br-bar  { width: 52px; height: 4px; background: var(--surface2); border-radius: 100px; overflow: hidden; flex-shrink: 0; }
+.br-fill { height: 100%; border-radius: 100px; transition: width 0.3s, background 0.3s; }
+.br-pts  { font-size: 11px; color: var(--muted); width: 36px; text-align: right; flex-shrink: 0; }
+
+/* ── Recommendation ── */
+.rec-box {
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+  border: 1px solid;
+  transition: background 0.3s, border-color 0.3s;
+}
+.rec-verdict {
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+  transition: color 0.3s;
+}
+.rec-score-line { font-size: 11px; opacity: 0.65; margin-bottom: 10px; }
+.rec-body { font-size: 12px; line-height: 1.5; opacity: 0.85; }
+.rec-tags {
+  display: flex; flex-wrap: wrap; gap: 5px;
+  justify-content: center; margin-top: 10px;
+}
+.rec-tag {
+  font-size: 11px; font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 100px;
+  border: 1px solid;
+  opacity: 0.8;
+}
+
+/* ── Notes ── */
+.notes-area {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font: 13px/1.5 inherit;
+  padding: 9px 11px;
+  resize: vertical;
+  min-height: 76px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.notes-area:focus { border-color: var(--accent); }
+.notes-area::placeholder { color: var(--muted); }
+
+/* ── Action Row ── */
+.action-row { display: flex; gap: 7px; margin-top: 10px; }
+.action-row .btn { flex: 1; text-align: center; }
+
+/* ── Toast ── */
+.toast {
+  position: fixed;
+  bottom: 22px; right: 22px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 13px; font-weight: 600;
+  box-shadow: var(--shadow);
+  transform: translateY(130%);
+  transition: transform 0.22s cubic-bezier(.4,0,.2,1);
+  z-index: 999;
+  display: flex; align-items: center; gap: 8px;
+}
+.toast.show { transform: translateY(0); }
+.toast-dot { width: 7px; height: 7px; background: var(--green); border-radius: 50%; }
+
+/* ── Responsive ── */
+@media (max-width: 960px) {
+  .main-grid { grid-template-columns: 1fr; }
+  .right-col  { position: static; flex-direction: row; flex-wrap: wrap; }
+  .right-col .panel { flex: 1 1 260px; }
+  .rec-box { flex: 1 1 100%; }
+}
+@media (max-width: 560px) {
+  .wrap { padding: 14px 14px 40px; }
+  .header { flex-direction: column; align-items: flex-start; gap: 10px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">
+      <div class="logo-mark">⚡</div>
+      <div>
+        <div class="logo-name">AI Tool Idea Scorer</div>
+        <div class="logo-sub">FieldKit · Internal Decision Tool</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <span class="header-date" id="headerDate"></span>
+      <button class="btn btn-accent" onclick="copyExport()">📋 Copy Summary</button>
+      <button class="btn btn-danger" onclick="resetAll()">↺ Reset</button>
+    </div>
+  </header>
+
+  <!-- Idea Input -->
+  <div class="idea-row">
+    <label class="field-label" for="ideaInput">Tool Idea</label>
+    <input
+      type="text"
+      class="idea-input"
+      id="ideaInput"
+      placeholder="Describe the tool idea you're evaluating…"
+      autocomplete="off"
+    />
+  </div>
+
+  <!-- Main two-column layout -->
+  <div class="main-grid">
+
+    <!-- Left: Dimensions -->
+    <div class="dims-col" id="dimsCol"></div>
+
+    <!-- Right: Live panel -->
+    <div class="right-col">
+
+      <!-- Radar chart -->
+      <div class="panel">
+        <div class="panel-title">Dimension Profile</div>
+        <div class="radar-wrap">
+          <svg id="radarSvg" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg"
+               aria-label="Radar chart of dimension scores"></svg>
+        </div>
+      </div>
+
+      <!-- Score + progress -->
+      <div class="panel">
+        <div class="panel-title">Weighted Score</div>
+        <div class="score-row-main">
+          <div style="display:flex;align-items:flex-end;gap:2px">
+            <div class="score-big" id="scoreNumber">—</div>
+            <div class="score-denom">/100</div>
+          </div>
+          <div class="score-label-right" id="scoreContext"></div>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill" style="width:0%"></div>
+        </div>
+      </div>
+
+      <!-- Breakdown -->
+      <div class="panel">
+        <div class="panel-title">Score Breakdown</div>
+        <div class="breakdown-rows" id="breakdownRows"></div>
+      </div>
+
+      <!-- Recommendation -->
+      <div class="rec-box" id="recBox">
+        <div class="rec-verdict" id="recVerdict">Score your idea →</div>
+        <div class="rec-score-line" id="recScoreLine">Adjust scores to see your recommendation</div>
+        <div class="rec-body" id="recBody"></div>
+        <div class="rec-tags" id="recTags"></div>
+      </div>
+
+      <!-- Notes + actions -->
+      <div class="panel">
+        <div class="panel-title">Notes & Context</div>
+        <textarea
+          class="notes-area"
+          id="notesArea"
+          placeholder="Context, caveats, follow-up questions, competing tools to investigate…"
+        ></textarea>
+        <div class="action-row">
+          <button class="btn btn-accent" onclick="copyExport()">📋 Copy Summary</button>
+          <button class="btn btn-danger" onclick="resetAll()">↺ Reset</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <span class="toast-dot"></span>
+  Summary copied to clipboard
+</div>
+
+<script>
+/* ════════════════════════════════════════════════
+   DATA
+════════════════════════════════════════════════ */
+const DIMS = [
+  {
+    id: 'audience',
+    name: 'Audience Size & Reachability',
+    short: 'Audience',
+    weight: 20,
+    descs: [
+      'Very niche — fewer than 10K people have this problem, no obvious community or reachable channel.',
+      'Niche but findable — 10K–100K people affected, some communities exist (subreddit, Discord, forum).',
+      'Moderate — 100K–1M people, clear communities with active members across multiple platforms.',
+      'Large — 1M–10M people, strong community infrastructure with high-traffic hubs and repeat discussions.',
+      'Massive — 10M+ people, multiple high-traffic communities, broad mainstream awareness of the problem.'
+    ]
+  },
+  {
+    id: 'aival',
+    name: 'Decision Complexity / AI Value-Add',
+    short: 'AI Value',
+    weight: 20,
+    descs: [
+      'Easily answered by a single search — no real research or synthesis needed, AI adds little.',
+      'Requires cross-referencing a few sources, but nothing complex. AI saves minor time.',
+      'Multiple variables at play, some synthesis required. AI meaningfully accelerates the research.',
+      'Complex, multi-factor decision. Most people get it wrong. AI provides real leverage here.',
+      'Deeply complex — expert-level research required, high cost if wrong. AI is genuinely transformative.'
+    ]
+  },
+  {
+    id: 'competition',
+    name: 'Existing Competition & Saturation',
+    short: 'Competition',
+    weight: 15,
+    descs: [
+      'Excellent free tools already exist — well-known, trusted, widely used. Hard to compete.',
+      'Good tools exist but have significant friction, notable gaps, or problematic UX.',
+      'Partial coverage — some tools exist but none are actually great; real room to do it better.',
+      'Poor existing tools — mostly listicles, paywalled content, biased sources, or outdated info.',
+      'No good tool exists. The gap is real, obvious, and completely unfilled. Wide open.'
+    ]
+  },
+  {
+    id: 'build',
+    name: 'Build Complexity',
+    short: 'Buildability',
+    weight: 15,
+    descs: [
+      'Requires live data feeds, external APIs, user accounts, or complex backend integrations.',
+      'Significant research needed plus complex interactive logic — heavy Claude session required.',
+      'Moderate research plus standard interactive elements (filters, scoring, checklists, comparisons).',
+      'Straightforward research with simple interactivity — one focused Claude session handles it well.',
+      'Simple structure, well-defined content, minimal interactivity. Quick to research and build.'
+    ]
+  },
+  {
+    id: 'monetize',
+    name: 'Monetization Potential',
+    short: 'Monetization',
+    weight: 10,
+    descs: [
+      'No obvious monetization path — free topic, no related purchases, no sponsor interest.',
+      'Weak affiliate potential or small audience with low willingness to pay.',
+      'Moderate affiliate potential or some relevant sponsor categories worth pursuing.',
+      'Strong affiliate potential (high-value purchase decisions involved) or clear sponsor niche.',
+      'Excellent — high-value transactions, established affiliate programs, natural sponsor fit, clear demand.'
+    ]
+  },
+  {
+    id: 'viral',
+    name: 'Shareability & Viral Potential',
+    short: 'Virality',
+    weight: 10,
+    descs: [
+      'Private or personal use only — this type of tool simply does not get shared.',
+      'Some sharing but mostly one-to-one; no real community distribution expected.',
+      'Moderate — people drop it in threads when the topic comes up; organic sharing likely.',
+      'High — solves a frustration people discuss publicly and vocally; strong community share potential.',
+      'Viral potential — obvious community drop, the problem is complained about constantly and loudly.'
+    ]
+  },
+  {
+    id: 'evergreen',
+    name: 'Evergreen vs. Time-Sensitive',
+    short: 'Evergreen',
+    weight: 5,
+    descs: [
+      'Highly time-sensitive — underlying data changes constantly, tool rots within months.',
+      'Moderately time-sensitive — needs meaningful updates at least annually to stay accurate.',
+      'Mostly evergreen — periodic updates every 1–2 years needed, but core logic stays stable.',
+      'Mostly evergreen — infrequent updates required, decision framework doesn\'t shift much.',
+      'Fully evergreen — the underlying decision logic and criteria do not meaningfully change over time.'
+    ]
+  },
+  {
+    id: 'strategy',
+    name: 'Strategic Fit',
+    short: 'Strategy',
+    weight: 5,
+    descs: [
+      'Unrelated to any existing work, audience, or brand direction — one-off island.',
+      'Weak connection — tangentially related at best, no direct synergy.',
+      'Moderate fit — adds to the portfolio without direct synergy; standalone value only.',
+      'Good fit — reinforces an existing niche, audience segment, or tool category.',
+      'Perfect fit — directly extends an existing tool, audience, project, or content category.'
+    ]
+  }
+];
+
+/* ════════════════════════════════════════════════
+   STATE
+════════════════════════════════════════════════ */
+let scores = new Array(DIMS.length).fill(3);
+const LS_KEY = 'fieldkit_scorer_v1';
+
+/* ════════════════════════════════════════════════
+   INIT
+════════════════════════════════════════════════ */
+function init() {
+  // Set date
+  document.getElementById('headerDate').textContent =
+    new Date().toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric', year:'numeric' });
+
+  // Load saved state
+  try {
+    const saved = JSON.parse(localStorage.getItem(LS_KEY) || '{}');
+    if (saved.scores && saved.scores.length === DIMS.length) scores = saved.scores;
+    if (saved.idea)  document.getElementById('ideaInput').value  = saved.idea;
+    if (saved.notes) document.getElementById('notesArea').value  = saved.notes;
+  } catch(e) {}
+
+  // Auto-save on idea/notes changes
+  document.getElementById('ideaInput').addEventListener('input', saveState);
+  document.getElementById('notesArea').addEventListener('input', saveState);
+
+  buildDimCards();
+  updateAll();
+}
+
+/* ════════════════════════════════════════════════
+   BUILD DIMENSION CARDS
+════════════════════════════════════════════════ */
+function buildDimCards() {
+  const col = document.getElementById('dimsCol');
+  col.innerHTML = '';
+
+  DIMS.forEach((dim, idx) => {
+    const card = document.createElement('div');
+    card.className = 'dim-card';
+    card.setAttribute('role', 'group');
+    card.setAttribute('aria-label', dim.name);
+
+    card.innerHTML = `
+      <div class="dim-header">
+        <span class="dim-num">${idx + 1}</span>
+        <span class="dim-name">${dim.name}</span>
+        <span class="dim-weight">${dim.weight}%</span>
+      </div>
+      <div class="score-row" id="btnrow-${idx}" role="group" aria-label="Score for ${dim.name}">
+        ${[1,2,3,4,5].map(s => `
+          <button
+            class="score-btn${scores[idx] === s ? ' active' : ''}"
+            data-dim="${idx}" data-val="${s}"
+            tabindex="${s === 1 ? 0 : -1}"
+            aria-label="${s} out of 5"
+            aria-pressed="${scores[idx] === s}"
+          >${s}</button>
+        `).join('')}
+      </div>
+      <div class="score-desc" id="desc-${idx}">
+        <strong>${scores[idx]}/5</strong> — ${dim.descs[scores[idx]-1]}
+      </div>
+    `;
+
+    col.appendChild(card);
+
+    const btnRow = card.querySelector(`#btnrow-${idx}`);
+    const descEl = card.querySelector(`#desc-${idx}`);
+
+    btnRow.querySelectorAll('.score-btn').forEach(btn => {
+      const v = parseInt(btn.dataset.val);
+
+      btn.addEventListener('click', () => setScore(idx, v));
+
+      // Hover preview
+      btn.addEventListener('mouseenter', () => {
+        descEl.innerHTML = `<strong style="opacity:.7">${v}/5</strong> — ${dim.descs[v-1]}`;
+        descEl.classList.add('preview');
+      });
+      btn.addEventListener('mouseleave', () => {
+        descEl.innerHTML = `<strong>${scores[idx]}/5</strong> — ${dim.descs[scores[idx]-1]}`;
+        descEl.classList.remove('preview');
+      });
+
+      // Arrow key navigation within button row
+      btn.addEventListener('keydown', e => {
+        const cur = scores[idx];
+        if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          const next = Math.min(5, cur + 1);
+          setScore(idx, next);
+          btnRow.querySelector(`.score-btn[data-val="${next}"]`)?.focus();
+        }
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+          e.preventDefault();
+          const prev = Math.max(1, cur - 1);
+          setScore(idx, prev);
+          btnRow.querySelector(`.score-btn[data-val="${prev}"]`)?.focus();
+        }
+      });
+    });
+  });
+}
+
+/* ════════════════════════════════════════════════
+   SET SCORE
+════════════════════════════════════════════════ */
+function setScore(dimIdx, val) {
+  scores[dimIdx] = val;
+
+  const btnRow = document.getElementById(`btnrow-${dimIdx}`);
+  const descEl = document.getElementById(`desc-${dimIdx}`);
+
+  btnRow.querySelectorAll('.score-btn').forEach(btn => {
+    const v = parseInt(btn.dataset.val);
+    btn.classList.toggle('active', v === val);
+    btn.setAttribute('aria-pressed', v === val);
+    btn.tabIndex = v === 1 ? 0 : -1;
+  });
+
+  descEl.innerHTML = `<strong>${val}/5</strong> — ${DIMS[dimIdx].descs[val-1]}`;
+  descEl.classList.remove('preview');
+
+  updateAll();
+  saveState();
+}
+
+/* ════════════════════════════════════════════════
+   COMPUTE
+════════════════════════════════════════════════ */
+function computeTotal() {
+  // Each dimension: ((score-1)/4) * weight  →  sum ranges 0–100
+  return DIMS.reduce((sum, dim, i) => sum + ((scores[i]-1)/4) * dim.weight, 0);
+}
+
+function getRec(total) {
+  if (total >= 80) return {
+    label: 'Strong Go', emoji: '🚀', tier: 'go',
+    color: 'var(--green)', bg: 'rgba(63,185,80,0.08)', border: 'rgba(63,185,80,0.3)'
+  };
+  if (total >= 60) return {
+    label: 'Conditional Go', emoji: '✓', tier: 'conditional',
+    color: 'var(--yellow)', bg: 'rgba(227,179,65,0.08)', border: 'rgba(227,179,65,0.3)'
+  };
+  if (total >= 40) return {
+    label: 'Hold', emoji: '⏸', tier: 'hold',
+    color: 'var(--orange)', bg: 'rgba(219,109,40,0.08)', border: 'rgba(219,109,40,0.3)'
+  };
+  return {
+    label: 'Pass', emoji: '✕', tier: 'pass',
+    color: 'var(--red)', bg: 'rgba(248,81,73,0.08)', border: 'rgba(248,81,73,0.3)'
+  };
+}
+
+function dimRank() {
+  return DIMS.map((d, i) => ({ ...d, idx: i, score: scores[i] }))
+    .sort((a, b) => a.score - b.score);
+}
+
+/* ════════════════════════════════════════════════
+   UPDATE ALL
+════════════════════════════════════════════════ */
+function updateAll() {
+  const raw   = computeTotal();
+  const total = Math.round(raw);
+  const rec   = getRec(raw);
+
+  // Score number
+  const numEl = document.getElementById('scoreNumber');
+  numEl.textContent = total;
+  numEl.style.color = rec.color;
+
+  // Context label
+  const ctx = document.getElementById('scoreContext');
+  const avgScore = (raw / 100 * 4 + 1).toFixed(1);
+  ctx.innerHTML = `avg <strong style="color:var(--text)">${avgScore}</strong>/5`;
+
+  // Progress bar
+  const fill = document.getElementById('progressFill');
+  fill.style.width = total + '%';
+  fill.style.backgroundColor = rec.color;
+
+  // Breakdown
+  updateBreakdown(rec.color);
+
+  // Recommendation
+  updateRec(total, raw, rec);
+
+  // Radar
+  drawRadar();
+}
+
+/* ════════════════════════════════════════════════
+   BREAKDOWN
+════════════════════════════════════════════════ */
+function updateBreakdown(accentColor) {
+  const el = document.getElementById('breakdownRows');
+  el.innerHTML = DIMS.map((dim, i) => {
+    const s    = scores[i];
+    const pts  = ((s-1)/4) * dim.weight;
+    const pct  = ((s-1)/4) * 100;
+    return `
+      <div class="br-row">
+        <span class="br-num">${i+1}</span>
+        <span class="br-name" title="${dim.name}">${dim.short}</span>
+        <span class="br-score">${s}/5</span>
+        <div class="br-bar">
+          <div class="br-fill" style="width:${pct}%;background:${accentColor}"></div>
+        </div>
+        <span class="br-pts">${pts.toFixed(1)} pt${pts !== 1 ? 's' : ''}</span>
+      </div>
+    `;
+  }).join('');
+}
+
+/* ════════════════════════════════════════════════
+   RECOMMENDATION
+════════════════════════════════════════════════ */
+function updateRec(total, raw, rec) {
+  const box     = document.getElementById('recBox');
+  const verdict = document.getElementById('recVerdict');
+  const scoreLn = document.getElementById('recScoreLine');
+  const body    = document.getElementById('recBody');
+  const tags    = document.getElementById('recTags');
+
+  box.style.background   = rec.bg;
+  box.style.borderColor  = rec.border;
+  box.style.color        = rec.color;
+
+  verdict.textContent = `${rec.emoji} ${rec.label}`;
+  scoreLn.textContent = `Score ${total}/100`;
+
+  const ranked  = dimRank();
+  const lowest  = ranked.slice(0, 3);
+  const highest = ranked.slice(-3).reverse();
+
+  let bodyText = '';
+  let tagItems = [];
+
+  if (raw >= 80) {
+    bodyText = 'Strong signal across the board. Build this. These are your best-performing dimensions:';
+    tagItems = highest.map(d => ({ text: `↑ ${d.short} (${d.score}/5)`, good: true }));
+  } else if (raw >= 60) {
+    const weak = lowest.slice(0, 2);
+    bodyText = `Worth building — but address these weak points before committing significant time:`;
+    tagItems = weak.map(d => ({ text: `⚠ ${d.short} (${d.score}/5)`, good: false }));
+  } else if (raw >= 40) {
+    bodyText = `Interesting idea, but it's missing key criteria. Revisit if any of these change:`;
+    tagItems = lowest.map(d => ({ text: `↓ ${d.short} (${d.score}/5)`, good: false }));
+  } else {
+    bodyText = `Not worth building now. Significant gaps in the fundamentals:`;
+    tagItems = lowest.map(d => ({ text: `✕ ${d.short} (${d.score}/5)`, good: false }));
+  }
+
+  body.textContent = bodyText;
+  tags.innerHTML = tagItems.map(t => `
+    <span class="rec-tag" style="border-color:${rec.border};color:${rec.color}">${t.text}</span>
+  `).join('');
+}
+
+/* ════════════════════════════════════════════════
+   RADAR CHART (SVG)
+════════════════════════════════════════════════ */
+function drawRadar() {
+  const svg  = document.getElementById('radarSvg');
+  const cx = 150, cy = 152, maxR = 96;
+  const n  = DIMS.length;
+  const step = (2 * Math.PI) / n;
+
+  const angle = i => -Math.PI / 2 + i * step;
+  const pt    = (r, i) => [cx + r * Math.cos(angle(i)), cy + r * Math.sin(angle(i))];
+  const poly  = r  => Array.from({length: n}, (_, i) => pt(r, i).join(',')).join(' ');
+
+  let out = '';
+
+  // Background rings
+  for (let lv = 1; lv <= 5; lv++) {
+    const r = (lv / 5) * maxR;
+    const fill = lv === 5 ? 'fill="rgba(255,255,255,0.015)"' : 'fill="none"';
+    out += `<polygon points="${poly(r)}" ${fill} stroke="#30363d" stroke-width="${lv === 5 ? 1 : 0.7}"/>`;
+  }
+
+  // Axis lines
+  for (let i = 0; i < n; i++) {
+    const [x, y] = pt(maxR, i);
+    out += `<line x1="${cx}" y1="${cy}" x2="${x.toFixed(2)}" y2="${y.toFixed(2)}" stroke="#30363d" stroke-width="0.7"/>`;
+  }
+
+  // Level tick labels (on right axis, i=2)
+  for (let lv = 1; lv <= 5; lv++) {
+    const r = (lv / 5) * maxR;
+    const [x, y] = pt(r, 2); // right axis
+    out += `<text x="${(x+4).toFixed(1)}" y="${(y+3).toFixed(1)}" fill="#484f58" font-size="7.5" font-family="system-ui,sans-serif">${lv}</text>`;
+  }
+
+  // Score fill polygon
+  const scorePts = DIMS.map((_, i) => {
+    const r = (scores[i] / 5) * maxR;
+    return pt(r, i).join(',');
+  }).join(' ');
+  out += `<polygon points="${scorePts}" fill="rgba(88,166,255,0.13)" stroke="#58a6ff" stroke-width="1.5" stroke-linejoin="round"/>`;
+
+  // Score dots
+  DIMS.forEach((_, i) => {
+    const r = (scores[i] / 5) * maxR;
+    const [x, y] = pt(r, i);
+    out += `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="3.5" fill="#58a6ff" stroke="#0d1117" stroke-width="1.5"/>`;
+  });
+
+  // Labels
+  const labelR = maxR + 20;
+  DIMS.forEach((dim, i) => {
+    const ang = angle(i);
+    const [lx, ly] = pt(labelR, i);
+
+    const cosA = Math.cos(ang);
+    let anchor = 'middle';
+    if (cosA >  0.25) anchor = 'start';
+    if (cosA < -0.25) anchor = 'end';
+
+    // Two-word labels get split
+    const words = dim.short.split(' ');
+    if (words.length > 1) {
+      const lineH = 10.5;
+      const yOff  = Math.abs(Math.sin(ang)) > 0.7 ? -lineH / 2 : 0;
+      out += `<text text-anchor="${anchor}" font-size="9.5" font-family="system-ui,sans-serif" fill="#8b949e">`;
+      words.forEach((w, wi) => {
+        out += `<tspan x="${lx.toFixed(2)}" y="${(ly + yOff + wi * lineH).toFixed(2)}">${w}</tspan>`;
+      });
+      out += `</text>`;
+    } else {
+      out += `<text x="${lx.toFixed(2)}" y="${(ly + 3).toFixed(2)}" text-anchor="${anchor}" dominant-baseline="middle" font-size="9.5" font-family="system-ui,sans-serif" fill="#8b949e">${dim.short}</text>`;
+    }
+  });
+
+  svg.innerHTML = out;
+}
+
+/* ════════════════════════════════════════════════
+   RESET
+════════════════════════════════════════════════ */
+function resetAll() {
+  if (!confirm('Clear all scores, idea, and notes?')) return;
+
+  scores = new Array(DIMS.length).fill(3);
+  document.getElementById('ideaInput').value = '';
+  document.getElementById('notesArea').value = '';
+  localStorage.removeItem(LS_KEY);
+
+  // Rebuild cards (easiest way to reset button states cleanly)
+  buildDimCards();
+  updateAll();
+}
+
+/* ════════════════════════════════════════════════
+   SAVE STATE
+════════════════════════════════════════════════ */
+function saveState() {
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify({
+      scores,
+      idea:  document.getElementById('ideaInput').value,
+      notes: document.getElementById('notesArea').value
+    }));
+  } catch(e) {}
+}
+
+/* ════════════════════════════════════════════════
+   EXPORT
+════════════════════════════════════════════════ */
+function copyExport() {
+  const idea  = document.getElementById('ideaInput').value.trim() || '(untitled)';
+  const notes = document.getElementById('notesArea').value.trim();
+  const raw   = computeTotal();
+  const total = Math.round(raw);
+  const rec   = getRec(raw);
+  const date  = new Date().toLocaleDateString('en-US', {
+    year:'numeric', month:'long', day:'numeric'
+  });
+
+  const ranked = dimRank();
+  const lowest = ranked.slice(0, 3);
+
+  const line = '═'.repeat(54);
+  const dimLines = DIMS.map(dim => {
+    const i   = DIMS.indexOf(dim);
+    const s   = scores[i];
+    const pts = ((s-1)/4) * dim.weight;
+    const nameStr = dim.name.padEnd(42, '.');
+    return `  ${nameStr} ${s}/5  →  ${pts.toFixed(1).padStart(4)} pts`;
+  }).join('\n');
+
+  let recDetail = '';
+  if (raw >= 80) {
+    const top = dimRank().slice(-3).reverse().map(d => d.name).join(', ');
+    recDetail = `Build this. Strong signal driven by: ${top}.`;
+  } else if (raw >= 60) {
+    const weak = lowest.slice(0,2).map(d => d.name).join(', ');
+    recDetail = `Worth building. Address caveats before committing: ${weak}.`;
+  } else if (raw >= 40) {
+    const weak = lowest.map(d => d.name).join(', ');
+    recDetail = `Hold — revisit if these improve: ${weak}.`;
+  } else {
+    const weak = lowest.map(d => d.name).join(', ');
+    recDetail = `Pass — significant gaps in: ${weak}.`;
+  }
+
+  let out = `${line}
+AI TOOL IDEA SCORER — FieldKit
+${line}
+
+Idea:   ${idea}
+Date:   ${date}
+Score:  ${total}/100
+
+${line}
+DIMENSION SCORES
+${line}
+${dimLines}
+
+${line}
+RECOMMENDATION: ${rec.emoji} ${rec.label} (${total}/100)
+${line}
+${recDetail}`;
+
+  if (notes) {
+    out += `\n\n${line}\nNOTES\n${line}\n${notes}`;
+  }
+
+  out += `\n\n${line}`;
+
+  navigator.clipboard.writeText(out).then(() => showToast());
+}
+
+function showToast() {
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+/* ════════════════════════════════════════════════
+   BOOT
+════════════════════════════════════════════════ */
+init();
+</script>
+</body>
+</html>

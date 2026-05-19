@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Human Flourishing Rubric</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green:   #1B4332;
+      --green-mid: #2D6A4F;
+      --green-light: #52B788;
+      --gold:    #D4A017;
+      --gold-light: #F0C040;
+      --cream:   #FAF7F2;
+      --cream-dark: #F0EAE0;
+      --charcoal: #1C2B33;
+      --charcoal-soft: #344A56;
+      --muted:   #6B8491;
+      --white:   #FFFFFF;
+      --radius:  12px;
+      --shadow:  0 2px 16px rgba(27,67,50,0.09);
+      --band-flourishing: #2D6A4F;
+      --band-thriving:    #52B788;
+      --band-stable:      #D4A017;
+      --band-struggling:  #E07B39;
+      --band-crisis:      #C0392B;
+    }
+
+    html { font-size: 17px; scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      color: var(--charcoal);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.65;
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ─────────────────────────────────────────── */
+    header {
+      background: var(--green);
+      color: var(--cream);
+      padding: 2.2rem 1.5rem 1.8rem;
+      text-align: center;
+    }
+    header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.35rem;
+    }
+    header p.subtitle {
+      font-size: 0.95rem;
+      opacity: 0.78;
+      max-width: 56ch;
+      margin: 0 auto 1.4rem;
+      line-height: 1.5;
+    }
+
+    /* ── MODE TOGGLE ─────────────────────────────────────── */
+    .mode-toggle {
+      display: inline-flex;
+      background: rgba(255,255,255,0.12);
+      border-radius: 999px;
+      padding: 4px;
+      gap: 2px;
+    }
+    .mode-toggle button {
+      border: none;
+      background: transparent;
+      color: rgba(250,247,242,0.7);
+      font-size: 0.88rem;
+      font-weight: 600;
+      padding: 0.42rem 1.1rem;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      letter-spacing: 0.01em;
+    }
+    .mode-toggle button.active {
+      background: var(--gold);
+      color: var(--green);
+    }
+
+    /* ── MAIN LAYOUT ─────────────────────────────────────── */
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1.2rem 4rem;
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    @media (max-width: 860px) {
+      main { grid-template-columns: 1fr; }
+    }
+
+    /* ── DIMENSIONS PANEL ────────────────────────────────── */
+    .dimensions-panel { display: flex; flex-direction: column; gap: 1.5rem; }
+
+    .section-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .dim-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.4rem 1.6rem;
+      border-left: 4px solid var(--green-light);
+      transition: border-color 0.3s;
+    }
+    .dim-card:hover { border-left-color: var(--gold); }
+
+    .dim-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.3rem;
+      gap: 1rem;
+    }
+    .dim-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--green);
+    }
+    .dim-weight {
+      font-size: 0.78rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .dim-prompt {
+      font-size: 0.9rem;
+      color: var(--charcoal-soft);
+      margin-bottom: 1rem;
+      line-height: 1.5;
+    }
+
+    /* slider */
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .slider-wrap { flex: 1; position: relative; }
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--cream-dark);
+      outline: none;
+      cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--green);
+      border: 3px solid var(--white);
+      box-shadow: 0 1px 6px rgba(27,67,50,0.35);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--green);
+      border: 3px solid var(--white);
+      box-shadow: 0 1px 6px rgba(27,67,50,0.35);
+      cursor: pointer;
+    }
+    .score-badge {
+      min-width: 2.6rem;
+      text-align: center;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--green);
+      background: var(--cream);
+      border-radius: 8px;
+      padding: 0.1rem 0.4rem;
+    }
+
+    /* descriptors */
+    .descriptors {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.6rem;
+    }
+    @media (max-width: 600px) {
+      .descriptors { grid-template-columns: 1fr 1fr; }
+    }
+    .desc-item {
+      background: var(--cream);
+      border-radius: 8px;
+      padding: 0.6rem 0.75rem;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      border: 1.5px solid transparent;
+      transition: border-color 0.25s, background 0.25s;
+    }
+    .desc-item .desc-score {
+      font-weight: 800;
+      font-size: 0.88rem;
+      color: var(--green-mid);
+      display: block;
+      margin-bottom: 0.15rem;
+    }
+    .desc-item.active {
+      border-color: var(--green-light);
+      background: #EAF4EE;
+    }
+    .desc-item.active .desc-score { color: var(--green); }
+
+    /* ── RESULTS PANEL ───────────────────────────────────── */
+    .results-panel {
+      position: sticky;
+      top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    @media (max-width: 860px) {
+      .results-panel { position: static; }
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.4rem 1.5rem;
+    }
+
+    /* radar chart */
+    .radar-card { padding: 1.2rem 1rem 0.8rem; text-align: center; }
+    #radarChart { width: 100%; max-width: 340px; }
+
+    /* total score */
+    .score-card { text-align: center; }
+    .total-score-number {
+      font-size: 4rem;
+      font-weight: 900;
+      line-height: 1;
+      color: var(--green);
+      transition: color 0.4s;
+    }
+    .score-band-label {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-top: 0.3rem;
+      color: var(--green);
+      transition: color 0.4s;
+    }
+    .score-band-desc {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 0.4rem;
+      line-height: 1.5;
+    }
+
+    /* strengths / growth */
+    .highlights-card h3 {
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.8rem;
+    }
+    .highlight-row {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      margin-bottom: 0.55rem;
+      font-size: 0.88rem;
+    }
+    .highlight-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .dot-strength { background: var(--green-light); }
+    .dot-growth   { background: var(--gold); }
+    .highlight-name { font-weight: 600; color: var(--charcoal); }
+    .highlight-score { margin-left: auto; font-weight: 700; color: var(--muted); font-size: 0.83rem; }
+
+    .divider { height: 1px; background: var(--cream-dark); margin: 0.9rem 0; }
+
+    /* insight */
+    .insight-card { background: linear-gradient(135deg, #EAF4EE 0%, #F5F0E8 100%); border: 1.5px solid var(--green-light); }
+    .insight-card h3 {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 0.6rem;
+    }
+    #insightText {
+      font-size: 0.92rem;
+      color: var(--charcoal-soft);
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    /* action buttons */
+    .actions { display: flex; gap: 0.7rem; }
+    .btn {
+      flex: 1;
+      border: none;
+      border-radius: 8px;
+      padding: 0.65rem 0.8rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+      letter-spacing: 0.01em;
+    }
+    .btn:hover { opacity: 0.88; }
+    .btn:active { transform: scale(0.97); }
+    .btn-primary { background: var(--green); color: var(--cream); }
+    .btn-secondary { background: var(--cream-dark); color: var(--charcoal-soft); }
+
+    /* ── ABOUT SECTION ───────────────────────────────────── */
+    .about-section {
+      max-width: 1200px;
+      margin: 0 auto 3rem;
+      padding: 0 1.2rem;
+    }
+
+    details {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    summary {
+      padding: 1rem 1.4rem;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--green);
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      user-select: none;
+    }
+    summary::after { content: '▾'; font-size: 1rem; }
+    details[open] summary::after { content: '▴'; }
+    .about-body {
+      padding: 0 1.4rem 1.4rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    .framework-item { font-size: 0.87rem; line-height: 1.55; }
+    .framework-item strong { color: var(--green); display: block; margin-bottom: 0.15rem; }
+
+    /* ── TOAST ───────────────────────────────────────────── */
+    #toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--charcoal);
+      color: var(--cream);
+      padding: 0.7rem 1.5rem;
+      border-radius: 999px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s, transform 0.3s;
+      z-index: 999;
+    }
+    #toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ── MISC ────────────────────────────────────────────── */
+    .intro-note {
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-align: center;
+      max-width: 54ch;
+      margin: -0.5rem auto 1.5rem;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Human Flourishing Rubric</h1>
+  <p class="subtitle">A reflective lens for understanding how well life is going — across ten dimensions that matter most for a genuinely good human life.</p>
+  <div class="mode-toggle" role="group" aria-label="Assessment mode">
+    <button id="btnPersonal" class="active" onclick="setMode('personal')">Personal</button>
+    <button id="btnCommunity" onclick="setMode('community')">Community / Society</button>
+  </div>
+</header>
+
+<main>
+  <!-- LEFT: Dimension sliders -->
+  <div class="dimensions-panel" id="dimensionsPanel">
+    <p class="intro-note" id="introNote">Score each dimension honestly — not as you wish things were, but as they are. The point is clarity, not performance.</p>
+    <div id="dimCards"><!-- injected by JS --></div>
+  </div>
+
+  <!-- RIGHT: Results -->
+  <div class="results-panel">
+
+    <div class="card radar-card">
+      <svg id="radarChart" viewBox="0 0 320 300" xmlns="http://www.w3.org/2000/svg" aria-label="Radar chart of flourishing dimensions"></svg>
+    </div>
+
+    <div class="card score-card">
+      <div class="total-score-number" id="totalScore">—</div>
+      <div class="score-band-label" id="bandLabel">Score your dimensions to begin</div>
+      <div class="score-band-desc" id="bandDesc"></div>
+    </div>
+
+    <div class="card highlights-card" id="highlightsCard">
+      <h3>Strengths</h3>
+      <div id="strengthsList"></div>
+      <div class="divider"></div>
+      <h3>Growth Edges</h3>
+      <div id="growthList"></div>
+    </div>
+
+    <div class="card insight-card">
+      <h3>✦ Pattern Insight</h3>
+      <p id="insightText">Your insight will appear here as you score.</p>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-primary" onclick="exportSummary()">Copy Summary</button>
+      <button class="btn btn-secondary" onclick="confirmReset()">Reset</button>
+    </div>
+
+  </div>
+</main>
+
+<section class="about-section">
+  <details>
+    <summary>About This Rubric — Frameworks &amp; Sources</summary>
+    <div class="about-body">
+      <div class="framework-item">
+        <strong>Aristotle — Eudaimonia (4th c. BCE)</strong>
+        The foundational idea that flourishing is not merely feeling good but living and acting in accordance with one's highest capacities — a complete, excellent human life.
+      </div>
+      <div class="framework-item">
+        <strong>Martin Seligman — PERMA Model (2011)</strong>
+        Positive psychology's framework: Positive Emotion, Engagement, Relationships, Meaning, and Accomplishment as the five pillars of wellbeing.
+      </div>
+      <div class="framework-item">
+        <strong>Martha Nussbaum — Capabilities Approach (2011)</strong>
+        Flourishing requires a threshold of real capabilities — bodily health, emotional life, affiliation, practical reason, play, and control over one's political environment, among others.
+      </div>
+      <div class="framework-item">
+        <strong>Self-Determination Theory — Ryan &amp; Deci (2000)</strong>
+        Psychological wellbeing depends on the fulfillment of three basic needs: autonomy (self-authorship), competence (mastery), and relatedness (connection).
+      </div>
+      <div class="framework-item">
+        <strong>Bhutan — Gross National Happiness (1972)</strong>
+        A policy framework measuring wellbeing across living standards, health, education, governance, ecological diversity, time use, psychological wellbeing, cultural resilience, and community vitality.
+      </div>
+      <div class="framework-item">
+        <strong>OECD Better Life Index (2011)</strong>
+        A comparative framework spanning eleven domains: housing, income, jobs, community, education, environment, civic engagement, health, life satisfaction, safety, and work-life balance.
+      </div>
+    </div>
+  </details>
+</section>
+
+<div id="toast"></div>
+
+<script>
+// ─── DATA ──────────────────────────────────────────────────────────────────────
+
+const DIMS = [
+  {
+    id: 'physical',
+    name: 'Physical Vitality',
+    weight: 10,
+    personal:  'How would you describe your physical vitality — your health, energy, sleep, movement, and relationship to your body?',
+    community: "How would you describe this community's physical health — access to healthcare, prevalence of disease, physical activity, nutrition, and bodily wellbeing?",
+    descriptors: [
+      { score: 1,  text: 'Chronic illness, pain, or disability dominates daily life; basic physical functioning is significantly compromised.' },
+      { score: 4,  text: 'Frequent fatigue, poor sleep, or unmanaged health issues limit engagement; some effort at self-care, but inconsistently.' },
+      { score: 7,  text: 'Generally healthy and energetic; sleep is mostly restorative; movement is a regular part of life; illness is manageable.' },
+      { score: 10, text: 'Vibrant physical health — abundant energy, deep restorative sleep, nourishing food, joyful movement, freedom from preventable disease.' },
+    ]
+  },
+  {
+    id: 'psychological',
+    name: 'Psychological Wellbeing',
+    weight: 12,
+    personal:  'How would you describe your psychological wellbeing — your emotional resilience, inner peace, self-acceptance, and freedom from chronic distress?',
+    community: "How would you describe this community's psychological health — rates of anxiety, depression, emotional resilience, and overall mental wellbeing?",
+    descriptors: [
+      { score: 1,  text: 'Persistent depression, anxiety, or trauma dominates inner life; emotional pain is overwhelming and unremitting.' },
+      { score: 4,  text: 'Significant emotional difficulty is frequent; coping is strained; some periods of calm but instability returns.' },
+      { score: 7,  text: 'Emotionally resilient most of the time; able to process difficulty without being undone; a baseline of inner steadiness.' },
+      { score: 10, text: 'Deep self-acceptance, emotional fluency, and inner peace; difficulty is met with equanimity; life is experienced with genuine openness.' },
+    ]
+  },
+  {
+    id: 'relationships',
+    name: 'Meaningful Relationships',
+    weight: 12,
+    personal:  'How would you describe your relationships — the depth of connection, belonging, love, and mutual care in your life?',
+    community: "How would you describe this community's social fabric — trust between members, depth of relationships, sense of belonging, and mutual care?",
+    descriptors: [
+      { score: 1,  text: 'Deeply isolated; no meaningful human connection; loneliness is constant and painful.' },
+      { score: 4,  text: 'Some connections exist but are mostly surface-level; loneliness is frequent; reciprocal depth is rare.' },
+      { score: 7,  text: 'Solid relationships with real depth; a community of some kind; love is present; genuine belonging most of the time.' },
+      { score: 10, text: 'Rich, reciprocal, deeply known — love and belonging in abundance; strong community; relationships are a source of profound sustenance.' },
+    ]
+  },
+  {
+    id: 'purpose',
+    name: 'Purpose & Meaning',
+    weight: 12,
+    personal:  'How would you describe your sense of purpose — your direction, contribution to something beyond yourself, and the meaning you find in your life?',
+    community: "How would you describe this community's sense of collective purpose — shared values, contribution to something larger, and the meaning members find in communal life?",
+    descriptors: [
+      { score: 1,  text: 'Life feels purposeless; no clear sense of direction or meaning; existence feels arbitrary or futile.' },
+      { score: 4,  text: 'Some flickering sense of purpose, but it is fragile and easily lost; meaning is intermittent rather than sustaining.' },
+      { score: 7,  text: 'A clear sense of what matters and why; contribution to something beyond the self is real and felt; meaning is reliably accessible.' },
+      { score: 10, text: 'Profound orientation — life is organized around a deeply felt purpose; contribution to the world is significant; legacy is being built.' },
+    ]
+  },
+  {
+    id: 'autonomy',
+    name: 'Autonomy & Agency',
+    weight: 10,
+    personal:  'How would you describe your autonomy — your freedom to make meaningful choices about your own life, time, and direction?',
+    community: "How would you describe this community's autonomy — members' real freedom to self-determine, participate in decisions, and shape their own lives?",
+    descriptors: [
+      { score: 1,  text: 'Life is almost entirely controlled by external forces — poverty, oppression, illness, or coercion; meaningful choice is absent.' },
+      { score: 4,  text: 'Agency is constrained by significant structural, relational, or economic factors; choices exist but within very narrow bounds.' },
+      { score: 7,  text: 'Genuine freedom in most important domains; able to author the shape of one\'s days and direction; constraints are manageable.' },
+      { score: 10, text: 'Full self-authorship — free to direct one\'s time, work, relationships, and values; agency is expansive and exercised with integrity.' },
+    ]
+  },
+  {
+    id: 'growth',
+    name: 'Growth & Mastery',
+    weight: 10,
+    personal:  'How would you describe your growth — your learning, skill development, curiosity, and experience of being fully absorbed in meaningful challenge?',
+    community: "How would you describe this community's culture of growth — access to education, cultivation of skill, curiosity, and opportunities for mastery?",
+    descriptors: [
+      { score: 1,  text: 'Stagnant; no learning or development occurring; curiosity has atrophied; life feels static or regressive.' },
+      { score: 4,  text: 'Some interest in growth but little structured development; occasional engagement but no real momentum or mastery building.' },
+      { score: 7,  text: 'Regular learning and development; skills are deepening; curiosity is engaged; flow states are a recurring part of life.' },
+      { score: 10, text: 'Continuously growing; deep mastery in meaningful domains; curiosity is alive and generative; the experience of full engagement is frequent.' },
+    ]
+  },
+  {
+    id: 'material',
+    name: 'Material Security',
+    weight: 10,
+    personal:  'How would you describe your material security — whether your basic needs are met, your financial stability, and your freedom from poverty or precarity?',
+    community: "How would you describe this community's material conditions — housing stability, food security, income distribution, infrastructure, and economic safety?",
+    descriptors: [
+      { score: 1,  text: 'Basic needs are not reliably met — food, shelter, or safety are in question; material precarity is acute and destabilizing.' },
+      { score: 4,  text: 'Basic needs are mostly met but with significant financial stress, insecurity, or dependence; the margin is thin.' },
+      { score: 7,  text: 'Financially stable; shelter, food, and safety are secure; unexpected expenses are manageable; not wealthy but genuinely comfortable.' },
+      { score: 10, text: 'Material security is solid and durable; basic needs are abundantly met; financial freedom allows meaningful choices; generosity is possible.' },
+    ]
+  },
+  {
+    id: 'civic',
+    name: 'Civic & Community Life',
+    weight: 8,
+    personal:  'How would you describe your civic engagement — your participation in collective life, trust in institutions, sense of justice, and contribution to your community?',
+    community: "How would you describe this community's civic health — democratic participation, institutional trust, social justice, and collective engagement?",
+    descriptors: [
+      { score: 1,  text: 'Civic life is absent or hostile; institutions are corrupt or collapsed; there is no sense of participation or collective good.' },
+      { score: 4,  text: 'Low engagement in collective life; mistrust of institutions is high; some civic structures exist but feel disconnected or unjust.' },
+      { score: 7,  text: 'Real participation in community and civic life; reasonable trust in institutions; a sense of justice and shared responsibility is present.' },
+      { score: 10, text: 'Vibrant civic culture; institutions serve their people well; justice is pursued collectively; participation is broad, genuine, and effective.' },
+    ]
+  },
+  {
+    id: 'transcendence',
+    name: 'Transcendence & Meaning Beyond Self',
+    weight: 8,
+    personal:  'How would you describe your inner life beyond the personal — your spiritual practice, experiences of awe, connection to something larger than yourself?',
+    community: "How would you describe this community's relationship to transcendence — shared ritual, spiritual life, experiences of collective awe, and meaning beyond the material?",
+    descriptors: [
+      { score: 1,  text: 'Life feels entirely contained within the self and the immediately practical; no sense of anything larger, sacred, or awe-inspiring.' },
+      { score: 4,  text: 'Occasional glimpses of something larger, but no sustained practice or framework for meeting transcendence; it remains on the periphery.' },
+      { score: 7,  text: 'A meaningful inner life beyond the personal; regular experiences of awe, gratitude, or spiritual depth; connection to something larger is felt.' },
+      { score: 10, text: 'Deep, living relationship with transcendence — through practice, community, nature, or art; life is animated by something beyond the self.' },
+    ]
+  },
+  {
+    id: 'environment',
+    name: 'Environmental Relationship',
+    weight: 8,
+    personal:  'How would you describe your relationship with the natural world — your connection to ecological life, your sense of stewardship, and your embeddedness in the living world?',
+    community: "How would you describe this community's relationship with its natural environment — ecological health, stewardship, environmental justice, and sense of belonging to the living world?",
+    descriptors: [
+      { score: 1,  text: 'Completely disconnected from the natural world; ecological relationship is absent; nature is experienced as irrelevant or hostile.' },
+      { score: 4,  text: 'Some awareness of nature but little active relationship or stewardship; environmental degradation is present but largely unaddressed.' },
+      { score: 7,  text: 'Regular engagement with the natural world; a sense of ecological responsibility; the living world is experienced as real and important.' },
+      { score: 10, text: 'Deeply embedded in ecological relationship; stewardship is a lived practice; nature is experienced as kin; environmental justice is pursued.' },
+    ]
+  }
+];
+
+// ─── STATE ──────────────────────────────────────────────────────────────────────
+
+let mode = 'personal';
+const scores = {};
+DIMS.forEach(d => scores[d.id] = 5);
+
+// ─── INSIGHTS ───────────────────────────────────────────────────────────────────
+
+function getInsight(scores) {
+  const s = scores;
+  const avg = v => v.reduce((a,b)=>a+b,0)/v.length;
+
+  // Helper to get score by id
+  const g = id => s[id];
+
+  // Material low, purpose high
+  if (g('material') <= 4 && g('purpose') >= 7)
+    return "You carry a clear sense of meaning even under material constraint — that\'s rare and worth protecting. Purpose can sustain a person through scarcity, but not indefinitely. The material foundation still matters.";
+
+  // Relationships high, autonomy low
+  if (g('relationships') >= 7 && g('autonomy') <= 4)
+    return "You are rich in connection but constrained in self-direction. Belonging and autonomy are not opposites — the deepest relationships often expand rather than limit us. It may be worth asking what in your life is constricting your freedom to choose.";
+
+  // Autonomy high, relationships low
+  if (g('autonomy') >= 7 && g('relationships') <= 4)
+    return "You have carved out real freedom for yourself, but you may be doing it alone. Self-authorship without deep belonging can quietly hollow out. Freedom is most fully lived when it is witnessed and shared.";
+
+  // Purpose high, psychological low
+  if (g('purpose') >= 7 && g('psychological') <= 4)
+    return "Your sense of direction is strong, but something is costing you inside. Meaningful work can carry a person far, but it cannot substitute for inner healing. The mission and the self both deserve tending.";
+
+  // Physical low, everything else decent
+  if (g('physical') <= 4 && avg([g('psychological'), g('purpose'), g('relationships')]) >= 6)
+    return "Your inner and relational life is well-tended while your body is signaling distress. The body is not separate from everything else — it is the foundation. What your physical vitality is asking for may be the most important question right now.";
+
+  // Growth and psychological both low
+  if (g('growth') <= 4 && g('psychological') <= 4)
+    return "Stagnation and emotional difficulty are often companions — each amplifies the other. Sometimes the smallest new challenge — a skill, a curiosity, a project — can begin to move both at once. Starting is the work.";
+
+  // Civic low, everything else high
+  if (g('civic') <= 4 && avg([g('relationships'), g('purpose'), g('autonomy')]) >= 7)
+    return "You are flourishing at the personal scale while your civic life is thin. The individual and the collective are not separate — rich inner lives, over time, need a commons to sustain them. Engagement with the broader world may be the next horizon.";
+
+  // Transcendence high, material low
+  if (g('transcendence') >= 7 && g('material') <= 4)
+    return "Your inner life is alive to something larger while the ground beneath you is unstable. Transcendence can make precarity bearable — but a solid material foundation is also one of the conditions for a fully realized life. Both matter.";
+
+  // Environment low across the board
+  if (g('environment') <= 3)
+    return "Your relationship with the living world is thin or absent. This is easy to overlook — the natural world does not demand attention. But ecological disconnection carries quiet costs to attention, awe, and the sense of belonging to something real and ancient.";
+
+  // Very high overall (avg >= 8)
+  if (avg(DIMS.map(d=>s[d.id])) >= 8)
+    return "You are living at a high level across most dimensions — this is genuinely rare. The question worth sitting with is not 'how do I keep this' but 'what is this abundance for?' Flourishing at its fullest tends to overflow into others' lives.";
+
+  // High purpose + high growth
+  if (g('purpose') >= 7 && g('growth') >= 7 && g('relationships') <= 5)
+    return "You are oriented and growing — a powerful combination. But meaning and mastery, pursued alone, can become their own form of isolation. Who is this growth in service of, beyond yourself?";
+
+  // All roughly balanced (low variance)
+  const vals = DIMS.map(d=>s[d.id]);
+  const mean = avg(vals);
+  const variance = avg(vals.map(v=>(v-mean)**2));
+  if (variance < 3 && mean >= 5 && mean <= 7)
+    return "Your scores are remarkably balanced — no single dimension is dramatically low or high. This suggests stability and breadth. The invitation may be to choose one dimension and pursue depth there, rather than maintaining equilibrium across everything.";
+
+  // Psychological high, relationships low
+  if (g('psychological') >= 7 && g('relationships') <= 4)
+    return "You have developed real inner steadiness — but you may be experiencing it largely alone. Psychological resilience is most fully expressed in relationship, where it is tested, seen, and shared.";
+
+  // Default
+  return "Each dimension shapes the others — flourishing is an ecology, not a checklist. The gaps you notice are not failures; they are honest information about where life is asking for more attention.";
+}
+
+// ─── RENDER DIMENSIONS ──────────────────────────────────────────────────────────
+
+function renderDimCards() {
+  const container = document.getElementById('dimCards');
+  container.innerHTML = '';
+  DIMS.forEach((dim, i) => {
+    const score = scores[dim.id];
+    const promptText = mode === 'personal' ? dim.personal : dim.community;
+
+    const card = document.createElement('div');
+    card.className = 'dim-card';
+    card.id = 'card-' + dim.id;
+
+    // Descriptors html
+    const descHTML = dim.descriptors.map(d => {
+      const active = (score >= d.score && (d.score === 10 || score < (dim.descriptors.find(x=>x.score>d.score)?.score ?? 11)))
+        ? ' active' : '';
+      // Highlight the closest descriptor bracket
+      return `<div class="desc-item${getDescActive(score, d.score, dim.descriptors) ? ' active' : ''}">
+        <span class="desc-score">${d.score === 1 ? '1–3' : d.score === 4 ? '4–6' : d.score === 7 ? '7–9' : '10'}</span>
+        ${d.text}
+      </div>`;
+    }).join('');
+
+    card.innerHTML = `
+      <div class="dim-header">
+        <span class="dim-name">${i+1}. ${dim.name}</span>
+        <span class="dim-weight">${dim.weight}% weight</span>
+      </div>
+      <p class="dim-prompt">${promptText}</p>
+      <div class="slider-row">
+        <div class="slider-wrap">
+          <input type="range" min="1" max="10" step="1" value="${score}"
+            id="slider-${dim.id}"
+            aria-label="${dim.name} score"
+            oninput="onSlide('${dim.id}', this.value)" />
+        </div>
+        <div class="score-badge" id="badge-${dim.id}">${score}</div>
+      </div>
+      <div class="descriptors">${descHTML}</div>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+function getDescActive(score, descScore, descriptors) {
+  const idx = descriptors.findIndex(d => d.score === descScore);
+  const next = descriptors[idx+1];
+  const low = descScore;
+  const high = next ? next.score - 1 : 10;
+  return score >= low && score <= high;
+}
+
+// ─── SLIDER HANDLER ─────────────────────────────────────────────────────────────
+
+function onSlide(id, val) {
+  scores[id] = parseInt(val);
+  // update badge
+  document.getElementById('badge-'+id).textContent = val;
+  // refresh descriptors for this card
+  const dim = DIMS.find(d=>d.id===id);
+  const descs = document.querySelectorAll('#card-'+id+' .desc-item');
+  descs.forEach((el, i) => {
+    el.classList.toggle('active', getDescActive(scores[id], dim.descriptors[i].score, dim.descriptors));
+  });
+  updateResults();
+}
+
+// ─── RESULTS ────────────────────────────────────────────────────────────────────
+
+function calcTotal() {
+  return DIMS.reduce((sum, d) => sum + scores[d.id] * d.weight / 10, 0);
+}
+
+const BANDS = [
+  { min: 85, label: 'Flourishing', desc: 'Living deeply and fully across most dimensions of a good human life.', color: 'var(--band-flourishing)' },
+  { min: 70, label: 'Thriving',    desc: 'A strong foundation with meaningful engagement across most areas.', color: 'var(--band-thriving)' },
+  { min: 55, label: 'Stable',      desc: 'Meeting basic needs; genuine growth is possible with intention and support.', color: 'var(--band-stable)' },
+  { min: 40, label: 'Struggling',  desc: 'Significant gaps in key dimensions are limiting full engagement with life.', color: 'var(--band-struggling)' },
+  { min: 0,  label: 'Crisis',      desc: 'Core conditions for flourishing are not being met — support and care are urgent.', color: 'var(--band-crisis)' },
+];
+
+function getBand(total) {
+  return BANDS.find(b => total >= b.min);
+}
+
+function updateResults() {
+  const total = calcTotal();
+  const band = getBand(total);
+
+  // Score display
+  const numEl = document.getElementById('totalScore');
+  numEl.textContent = Math.round(total);
+  numEl.style.color = band.color;
+
+  const labelEl = document.getElementById('bandLabel');
+  labelEl.textContent = band.label;
+  labelEl.style.color = band.color;
+
+  document.getElementById('bandDesc').textContent = band.desc;
+
+  // Strengths & Growth Edges
+  const sorted = [...DIMS].sort((a,b) => {
+    // normalize by weight: a high score in a 12% dim vs 8% dim
+    const aNorm = scores[a.id];
+    const bNorm = scores[b.id];
+    return bNorm - aNorm;
+  });
+  const strengths = sorted.slice(0, 2);
+  const growth = sorted.slice(-2).reverse();
+
+  document.getElementById('strengthsList').innerHTML = strengths.map(d =>
+    `<div class="highlight-row">
+      <div class="highlight-dot dot-strength"></div>
+      <span class="highlight-name">${d.name}</span>
+      <span class="highlight-score">${scores[d.id]}/10</span>
+    </div>`
+  ).join('');
+
+  document.getElementById('growthList').innerHTML = growth.map(d =>
+    `<div class="highlight-row">
+      <div class="highlight-dot dot-growth"></div>
+      <span class="highlight-name">${d.name}</span>
+      <span class="highlight-score">${scores[d.id]}/10</span>
+    </div>`
+  ).join('');
+
+  // Insight
+  document.getElementById('insightText').textContent = getInsight(scores);
+
+  // Radar
+  drawRadar();
+}
+
+// ─── RADAR CHART ────────────────────────────────────────────────────────────────
+
+function drawRadar() {
+  const svg = document.getElementById('radarChart');
+  const cx = 160, cy = 152, r = 115;
+  const n = DIMS.length;
+
+  const angle = i => (i * 2 * Math.PI / n) - Math.PI/2;
+  const pt = (i, val) => {
+    const a = angle(i);
+    const fr = (val / 10) * r;
+    return [cx + fr * Math.cos(a), cy + fr * Math.sin(a)];
+  };
+  const ptR = (i, radius) => {
+    const a = angle(i);
+    return [cx + radius * Math.cos(a), cy + radius * Math.sin(a)];
+  };
+
+  let html = '';
+
+  // Background rings
+  [2,4,6,8,10].forEach(v => {
+    const fr = (v/10)*r;
+    const pts = DIMS.map((_,i)=>ptR(i,fr).join(',')).join(' ');
+    html += `<polygon points="${pts}" fill="none" stroke="#E0DDD8" stroke-width="1"/>`;
+  });
+
+  // Axis lines
+  DIMS.forEach((_,i) => {
+    const [x,y] = ptR(i, r);
+    html += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#D0CDC8" stroke-width="1"/>`;
+  });
+
+  // Data polygon
+  const dataPts = DIMS.map((_,i) => pt(i, scores[DIMS[i].id]).join(',')).join(' ');
+  html += `<polygon points="${dataPts}" fill="#2D6A4F" fill-opacity="0.18" stroke="#2D6A4F" stroke-width="2"/>`;
+
+  // Data dots
+  DIMS.forEach((_,i) => {
+    const [x,y] = pt(i, scores[DIMS[i].id]);
+    html += `<circle cx="${x}" cy="${y}" r="4.5" fill="#1B4332" stroke="white" stroke-width="2"/>`;
+  });
+
+  // Labels
+  DIMS.forEach((d,i) => {
+    const a = angle(i);
+    const labelR = r + 22;
+    const lx = cx + labelR * Math.cos(a);
+    const ly = cy + labelR * Math.sin(a);
+    const anchor = Math.abs(Math.cos(a)) < 0.1 ? 'middle' : Math.cos(a) > 0 ? 'start' : 'end';
+    // Short label
+    const shortName = d.name.length > 12 ? d.name.split(' ').map((w,wi)=>wi===0?w:w[0]+'.').join(' ') : d.name;
+    html += `<text x="${lx}" y="${ly}" text-anchor="${anchor}" dominant-baseline="middle"
+      font-size="9.5" fill="#344A56" font-family="-apple-system,BlinkMacSystemFont,sans-serif"
+      font-weight="600">${shortName}</text>`;
+  });
+
+  // Ring labels
+  [2,4,6,8,10].forEach(v => {
+    const fr = (v/10)*r;
+    html += `<text x="${cx+3}" y="${cy - fr - 3}" font-size="8" fill="#999" text-anchor="middle">${v}</text>`;
+  });
+
+  svg.innerHTML = html;
+}
+
+// ─── MODE ───────────────────────────────────────────────────────────────────────
+
+function setMode(m) {
+  mode = m;
+  document.getElementById('btnPersonal').classList.toggle('active', m==='personal');
+  document.getElementById('btnCommunity').classList.toggle('active', m==='community');
+  document.getElementById('introNote').textContent = m === 'personal'
+    ? 'Score each dimension honestly — not as you wish things were, but as they are. The point is clarity, not performance.'
+    : 'Score each dimension as it reflects the actual condition of the community or society you have in mind — not aspirationally, but honestly.';
+  renderDimCards();
+  updateResults();
+}
+
+// ─── EXPORT ─────────────────────────────────────────────────────────────────────
+
+function exportSummary() {
+  const total = Math.round(calcTotal());
+  const band = getBand(total);
+  const modeLabel = mode === 'personal' ? 'Personal Assessment' : 'Community / Society Assessment';
+  const date = new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+
+  let text = `HUMAN FLOURISHING RUBRIC — ${modeLabel}\n${date}\n`;
+  text += `${'─'.repeat(48)}\n\n`;
+  text += `Overall Score: ${total}/100 — ${band.label}\n`;
+  text += `${band.desc}\n\n`;
+  text += `DIMENSION SCORES\n`;
+  DIMS.forEach(d => {
+    text += `  ${d.name.padEnd(30)} ${scores[d.id]}/10  (${d.weight}% weight)\n`;
+  });
+  text += `\nPATTERN INSIGHT\n${document.getElementById('insightText').textContent}\n\n`;
+  text += `─────────────────────────────────────────────────\n`;
+  text += `Generated by the Human Flourishing Rubric\n`;
+  text += `Frameworks: Aristotle (Eudaimonia), Seligman (PERMA), Nussbaum (Capabilities),\n`;
+  text += `Ryan & Deci (SDT), Bhutan (GNH), OECD Better Life Index\n`;
+
+  navigator.clipboard.writeText(text).then(() => {
+    showToast('Summary copied to clipboard');
+  }).catch(() => {
+    prompt('Copy this summary:', text);
+  });
+}
+
+// ─── RESET ──────────────────────────────────────────────────────────────────────
+
+function confirmReset() {
+  if (confirm('Reset all scores to 5? This cannot be undone.')) {
+    DIMS.forEach(d => scores[d.id] = 5);
+    renderDimCards();
+    updateResults();
+    showToast('Scores reset');
+  }
+}
+
+// ─── TOAST ──────────────────────────────────────────────────────────────────────
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+// ─── INIT ────────────────────────────────────────────────────────────────────────
+
+renderDimCards();
+updateResults();
+</script>
+</body>
+</html>

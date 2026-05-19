@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Approach A — Mockup Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,400&family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c0b09;
+    --bg-elevated: #15130f;
+    --bg-card: #181612;
+    --border: #2a2620;
+    --border-strong: #3d3830;
+    --text: #ebe5d8;
+    --text-dim: #948a78;
+    --text-faint: #5e564a;
+    --accent: #c89b54;
+    --accent-warm: #d4663d;
+    --good: #7ea672;
+    --warn: #c97852;
+    --bad: #b04d3a;
+    --ev: #6b9bbd;
+    --serif: "Fraunces", Georgia, serif;
+    --sans: "Manrope", -apple-system, sans-serif;
+    --mono: "JetBrains Mono", monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.5;
+    padding: 48px 32px;
+    background-image:
+      radial-gradient(circle at 20% 0%, rgba(200,155,84,0.04) 0%, transparent 50%),
+      radial-gradient(circle at 80% 100%, rgba(212,102,61,0.03) 0%, transparent 50%);
+  }
+  .container { max-width: 880px; margin: 0 auto; }
+  .preview-header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 24px;
+    margin-bottom: 36px;
+  }
+  .preview-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  .preview-title {
+    font-family: var(--serif);
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    margin-bottom: 8px;
+  }
+  .preview-title em { font-style: italic; color: var(--accent); font-weight: 400; }
+  .preview-sub {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--text-dim);
+    font-size: 16px;
+  }
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 28px;
+    margin-bottom: 24px;
+  }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+  .card-make {
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+  }
+  .card-model {
+    font-family: var(--serif);
+    font-size: 30px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .card-years {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    margin-top: 4px;
+  }
+  .badges { margin-top: 12px; display: flex; gap: 8px; }
+  .badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 4px 8px;
+    border-radius: 2px;
+  }
+  .tier-strong { background: rgba(126,166,114,0.15); color: var(--good); border: 1px solid rgba(126,166,114,0.3); }
+  .tier-decent { background: rgba(201,120,82,0.15); color: var(--warn); border: 1px solid rgba(201,120,82,0.3); }
+  .tier-top { background: rgba(200,155,84,0.18); color: var(--accent); border: 1px solid rgba(200,155,84,0.4); }
+  .badge-cat { background: var(--bg-elevated); color: var(--text-dim); border: 1px solid var(--border-strong); }
+
+  /* === NEW: Family Map === */
+  .nav-section {
+    margin-bottom: 28px;
+  }
+  .nav-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed var(--border-strong);
+  }
+  .nav-label-icon {
+    width: 6px; height: 6px;
+    background: var(--accent);
+    transform: rotate(45deg);
+  }
+  .family-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--sans);
+    font-size: 13px;
+  }
+  .family-table th {
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-faint);
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .family-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+  .family-row-current {
+    background: rgba(200,155,84,0.06);
+  }
+  .family-row-current td {
+    color: var(--text);
+    font-weight: 500;
+  }
+  .family-row-info td {
+    color: var(--text-faint);
+    font-style: italic;
+  }
+  .family-gen {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+  .family-row-current .family-gen { color: var(--accent); }
+  .family-tier-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  .family-tier-dot.top { background: var(--accent); }
+  .family-tier-dot.strong { background: var(--good); }
+  .family-tier-dot.decent { background: var(--warn); }
+  .family-tier-dot.info { background: var(--text-faint); }
+  .family-action a {
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+  }
+  .family-action a:hover { border-bottom-color: var(--accent); }
+  .family-here {
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* === NEW: Trim Guide === */
+  .trim-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--sans);
+    font-size: 13px;
+  }
+  .trim-table th {
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-faint);
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .trim-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: top;
+  }
+  .trim-name {
+    font-weight: 600;
+    color: var(--text);
+  }
+  .trim-features { color: var(--text-dim); line-height: 1.4; }
+  .trim-signal {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+  }
+
+  /* === Sweet Spot Mileage display === */
+  .sweet-spot {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    background: rgba(200,155,84,0.08);
+    border: 1px solid rgba(200,155,84,0.3);
+    border-radius: 3px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    margin-bottom: 18px;
+  }
+  .sweet-spot-label {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-dim);
+  }
+  .sweet-spot-val { color: var(--accent); font-weight: 700; }
+
+  /* Existing card content placeholder */
+  .summary {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 17px;
+    color: var(--text);
+    margin-bottom: 18px;
+    line-height: 1.4;
+  }
+  .ph-section {
+    margin-top: 20px;
+    padding: 16px;
+    border: 1px dashed var(--border);
+    border-radius: 3px;
+    color: var(--text-faint);
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    text-align: center;
+  }
+  .notes-block {
+    background: var(--bg-elevated);
+    border-left: 2px solid var(--accent);
+    padding: 14px 18px;
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+  .legend {
+    display: flex;
+    gap: 18px;
+    margin-top: 36px;
+    padding: 16px;
+    background: var(--bg-elevated);
+    border-radius: 3px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    flex-wrap: wrap;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="preview-header">
+    <div class="preview-meta">Mockup · Approach A Preview</div>
+    <h1 class="preview-title">Family Map + <em>Trim Guide</em></h1>
+    <p class="preview-sub">A preview of how the expanded card view will look once Approach A and the Sweet Spot Mileage field ship to the live tool.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-make">Volkswagen</div>
+        <div class="card-model">GTI Mk6 (late)</div>
+        <div class="card-years">2013–2014</div>
+        <div class="badges">
+          <span class="badge tier-strong">Strong Tier</span>
+          <span class="badge badge-cat">Sedan</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sweet-spot">
+      <span class="sweet-spot-label">Sweet Spot Mileage</span>
+      <span class="sweet-spot-val">80,000 – 130,000 mi</span>
+    </div>
+
+    <p class="summary">The safest Mk6. Updated tensioner from factory, refined cabin, last of the analog GTIs.</p>
+
+    <div class="ph-section">[ Existing key-numbers / ratings / specs rows render here ]</div>
+
+    <!-- === NEW SECTION: Family Map === -->
+    <div class="nav-section">
+      <div class="nav-label">
+        <span class="nav-label-icon"></span>
+        Golf GTI — Family Map
+      </div>
+      <table class="family-table">
+        <thead>
+          <tr>
+            <th>Generation</th>
+            <th>Years</th>
+            <th>Engine</th>
+            <th>Tier</th>
+            <th>Price (2026)</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="family-gen">Mk5</td>
+            <td>2006–2009</td>
+            <td>2.0T FSI · 200hp</td>
+            <td><span class="family-tier-dot decent"></span>Decent</td>
+            <td>$4.5–7.5k</td>
+            <td class="family-action"><a href="#">View →</a></td>
+          </tr>
+          <tr>
+            <td class="family-gen">Mk6 (early)</td>
+            <td>2010–2012</td>
+            <td>2.0T TSI · 200hp</td>
+            <td><span class="family-tier-dot decent"></span>Decent</td>
+            <td>$7–9.5k</td>
+            <td class="family-action"><a href="#">View →</a></td>
+          </tr>
+          <tr class="family-row-current">
+            <td class="family-gen">▸ Mk6 (late)</td>
+            <td>2013–2014</td>
+            <td>2.0T TSI · 200hp</td>
+            <td><span class="family-tier-dot strong"></span>Strong</td>
+            <td>$8–11k</td>
+            <td class="family-here">━ here</td>
+          </tr>
+          <tr class="family-row-info">
+            <td class="family-gen">Mk7</td>
+            <td>2015–2019</td>
+            <td>2.0T TSI · 210hp</td>
+            <td><span class="family-tier-dot info"></span>info only</td>
+            <td>$10–15k</td>
+            <td class="family-action">above budget</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- === NEW SECTION: Trim Guide === -->
+    <div class="nav-section">
+      <div class="nav-label">
+        <span class="nav-label-icon"></span>
+        Trim Guide — Mk6 (late)
+      </div>
+      <table class="trim-table">
+        <thead>
+          <tr>
+            <th>Trim</th>
+            <th>Features</th>
+            <th>Used Pricing Signal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="trim-name">Base</td>
+            <td class="trim-features">Cloth seats, basic alloys, no nav. Cheapest entry. Manual mirrors.</td>
+            <td class="trim-signal">Bottom of range</td>
+          </tr>
+          <tr>
+            <td class="trim-name">Wolfsburg Edition</td>
+            <td class="trim-features">Sunroof, Bluetooth, alloys, cloth interior. The popular value trim.</td>
+            <td class="trim-signal">Best $/value</td>
+          </tr>
+          <tr>
+            <td class="trim-name">Driver's Edition (2013 only)</td>
+            <td class="trim-features">Plaid cloth, special wheels, sport-trim accents. Enthusiast favorite.</td>
+            <td class="trim-signal">Mid · rare find</td>
+          </tr>
+          <tr>
+            <td class="trim-name">Autobahn</td>
+            <td class="trim-features">Leather, heated seats, premium audio, navigation, dual-zone climate. The loaded trim.</td>
+            <td class="trim-signal">Top of range</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="notes-block">
+      The Family Map shows every Golf GTI variant — including ones outside your budget (Mk7) as info-only rows. The Trim Guide is specific to this card's year range. Both render automatically only for vehicles that belong to a family or have meaningful trim differentiation.
+    </div>
+
+    <div class="ph-section">[ Existing pros / cons / engine specs / best-years notes follow here ]</div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><span class="family-tier-dot top"></span>Top Tier</div>
+    <div class="legend-item"><span class="family-tier-dot strong"></span>Strong Tier</div>
+    <div class="legend-item"><span class="family-tier-dot decent"></span>Decent Tier</div>
+    <div class="legend-item"><span class="family-tier-dot info"></span>Info-only (above budget or watch-out)</div>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Equity Consideration Tool</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy:      #1B2A4A;
+    --navy-mid:  #243660;
+    --navy-lt:   #2E4480;
+    --terra:     #C4622D;
+    --terra-lt:  #D97A49;
+    --terra-bg:  #F5E9DF;
+    --cream:     #FAF7F2;
+    --white:     #FFFFFF;
+    --charcoal:  #1C2B33;
+    --mid-gray:  #5A6A74;
+    --border:    #D5CFC7;
+    --shadow:    rgba(27,42,74,0.10);
+    --r1-color:  #C0392B;
+    --r2-color:  #D68910;
+    --r3-color:  #27AE60;
+    --r4-color:  #1A8C4E;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+    background: var(--cream);
+    color: var(--charcoal);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  header {
+    background: var(--navy);
+    color: var(--white);
+    padding: 2.5rem 1.5rem 2rem;
+    text-align: center;
+  }
+  header .eyebrow {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--terra-lt);
+    margin-bottom: 0.5rem;
+  }
+  header h1 {
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.02em;
+  }
+  header p {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.75);
+    max-width: 580px;
+    margin: 0 auto;
+  }
+
+  /* ── Layout ── */
+  .main-wrap {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2rem 1rem 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 2px 12px var(--shadow);
+    overflow: hidden;
+  }
+  .card-header {
+    background: var(--navy);
+    color: var(--white);
+    padding: 1.1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .card-header .badge {
+    background: var(--terra);
+    color: var(--white);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 0.2rem 0.55rem;
+    border-radius: 20px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .card-header h2 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    flex: 1;
+  }
+  .card-body {
+    padding: 1.5rem;
+  }
+
+  /* ── Form fields ── */
+  label {
+    display: block;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 0.35rem;
+  }
+  input[type="text"], textarea, select {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 0.65rem 0.85rem;
+    font-size: 0.95rem;
+    font-family: inherit;
+    color: var(--charcoal);
+    background: var(--cream);
+    transition: border-color 0.15s, box-shadow 0.15s;
+    outline: none;
+  }
+  input[type="text"]:focus, textarea:focus {
+    border-color: var(--navy);
+    box-shadow: 0 0 0 3px rgba(27,42,74,0.12);
+    background: var(--white);
+  }
+  textarea { resize: vertical; min-height: 80px; }
+  .field-group { display: flex; flex-direction: column; gap: 1.1rem; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 560px) { .field-row { grid-template-columns: 1fr; } }
+
+  /* ── Lens sections ── */
+  .lens-section {
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 1.25rem;
+  }
+  .lens-section:last-child { margin-bottom: 0; }
+
+  .lens-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: var(--navy);
+    color: var(--white);
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.15s;
+  }
+  .lens-toggle:hover { background: var(--navy-mid); }
+  .lens-toggle .lens-num {
+    background: var(--terra);
+    color: var(--white);
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .lens-toggle .lens-title-wrap { flex: 1; }
+  .lens-toggle .lens-name {
+    font-size: 1rem;
+    font-weight: 600;
+    display: block;
+  }
+  .lens-toggle .lens-framing {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.7);
+    display: block;
+    margin-top: 0.15rem;
+  }
+  .lens-toggle .lens-score-badge {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    font-weight: 700;
+    background: rgba(255,255,255,0.12);
+    color: var(--white);
+    white-space: nowrap;
+    transition: background 0.2s;
+  }
+  .lens-toggle .chevron {
+    font-size: 0.75rem;
+    transition: transform 0.2s;
+    color: rgba(255,255,255,0.6);
+  }
+  .lens-toggle.open .chevron { transform: rotate(180deg); }
+
+  .lens-body {
+    padding: 1.25rem;
+    background: var(--white);
+    display: none;
+    flex-direction: column;
+    gap: 1.1rem;
+  }
+  .lens-body.open { display: flex; }
+
+  .prompts-box {
+    background: var(--cream);
+    border-left: 3px solid var(--terra);
+    border-radius: 0 8px 8px 0;
+    padding: 0.85rem 1rem;
+  }
+  .prompts-box p {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--mid-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 0.5rem;
+  }
+  .prompts-box ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .prompts-box ul li {
+    font-size: 0.9rem;
+    color: var(--charcoal);
+    padding-left: 1.1rem;
+    position: relative;
+  }
+  .prompts-box ul li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--terra);
+    font-size: 0.8rem;
+  }
+
+  /* ── Rating selector ── */
+  .rating-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .rating-label-row label { margin-bottom: 0; }
+  .rating-label-row .rating-hint {
+    font-size: 0.78rem;
+    color: var(--mid-gray);
+  }
+
+  .rating-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  @media (max-width: 420px) { .rating-grid { grid-template-columns: repeat(2, 1fr); } }
+
+  .rating-btn {
+    border: 2px solid var(--border);
+    background: var(--cream);
+    border-radius: 8px;
+    padding: 0.65rem 0.4rem;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .rating-btn .r-num {
+    font-size: 1.3rem;
+    font-weight: 700;
+    display: block;
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+  .rating-btn .r-label {
+    font-size: 0.72rem;
+    color: var(--mid-gray);
+    line-height: 1.3;
+    display: block;
+  }
+  .rating-btn:hover { border-color: var(--navy); }
+  .rating-btn.selected[data-val="1"] { border-color: var(--r1-color); background: #FDEDEC; }
+  .rating-btn.selected[data-val="1"] .r-num { color: var(--r1-color); }
+  .rating-btn.selected[data-val="2"] { border-color: var(--r2-color); background: #FEF9E7; }
+  .rating-btn.selected[data-val="2"] .r-num { color: var(--r2-color); }
+  .rating-btn.selected[data-val="3"] { border-color: var(--r3-color); background: #EAFAF1; }
+  .rating-btn.selected[data-val="3"] .r-num { color: var(--r3-color); }
+  .rating-btn.selected[data-val="4"] { border-color: var(--r4-color); background: #D5F5E3; }
+  .rating-btn.selected[data-val="4"] .r-num { color: var(--r4-color); }
+
+  /* ── Score panel ── */
+  #score-panel {
+    position: sticky;
+    top: 1rem;
+    align-self: flex-start;
+  }
+
+  .score-circle-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.25rem;
+  }
+  .score-circle {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 6px solid var(--navy);
+    background: var(--white);
+    transition: border-color 0.4s;
+  }
+  .score-circle .score-num {
+    font-size: 2.6rem;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--navy);
+    transition: color 0.4s;
+  }
+  .score-circle .score-denom {
+    font-size: 0.75rem;
+    color: var(--mid-gray);
+    margin-top: 0.1rem;
+  }
+
+  .score-band {
+    text-align: center;
+    margin-bottom: 1.25rem;
+  }
+  .score-band .band-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--navy);
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+  .score-band .band-desc {
+    font-size: 0.82rem;
+    color: var(--mid-gray);
+  }
+
+  .score-bar-wrap {
+    margin-bottom: 1.5rem;
+  }
+  .score-bar-track {
+    height: 8px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .score-bar-fill {
+    height: 100%;
+    background: var(--terra);
+    border-radius: 4px;
+    width: 0%;
+    transition: width 0.5s ease, background-color 0.4s;
+  }
+
+  .highlights {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+  .highlight-item {
+    background: var(--cream);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+  }
+  .highlight-item .hi-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--mid-gray);
+    margin-bottom: 0.25rem;
+  }
+  .highlight-item .hi-value {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--navy);
+  }
+  .highlight-item.gap .hi-label { color: var(--r1-color); }
+  .highlight-item.strong .hi-label { color: var(--r4-color); }
+
+  .action-prompts {
+    margin-bottom: 1.5rem;
+  }
+  .action-prompts h3 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--navy);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 0.75rem;
+  }
+  .action-item {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    background: var(--terra-bg);
+    border-radius: 8px;
+    padding: 0.75rem;
+  }
+  .action-item .action-num {
+    background: var(--terra);
+    color: var(--white);
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+  .action-item p {
+    font-size: 0.87rem;
+    color: var(--charcoal);
+    line-height: 1.45;
+  }
+
+  .use-guidance {
+    border-top: 1.5px solid var(--border);
+    padding-top: 1.25rem;
+    margin-top: 0;
+  }
+  .use-guidance h3 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--navy);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 0.5rem;
+  }
+  .use-guidance p {
+    font-size: 0.84rem;
+    color: var(--mid-gray);
+    line-height: 1.5;
+  }
+  .use-guidance ul {
+    margin-top: 0.5rem;
+    padding-left: 1.1rem;
+  }
+  .use-guidance ul li {
+    font-size: 0.84rem;
+    color: var(--mid-gray);
+    margin-bottom: 0.3rem;
+  }
+
+  /* ── Lens summary bars ── */
+  .lens-bars { display: flex; flex-direction: column; gap: 0.45rem; margin-bottom: 1.25rem; }
+  .lens-bar-row { display: flex; align-items: center; gap: 0.5rem; }
+  .lens-bar-name { font-size: 0.72rem; color: var(--mid-gray); width: 80px; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .lens-bar-track { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .lens-bar-fill { height: 100%; border-radius: 3px; background: var(--terra); transition: width 0.4s ease; }
+  .lens-bar-val { font-size: 0.72rem; font-weight: 700; color: var(--navy); width: 1.5rem; text-align: right; flex-shrink: 0; }
+
+  /* ── Two column layout ── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 2rem;
+    align-items: start;
+  }
+  @media (max-width: 760px) {
+    .two-col { grid-template-columns: 1fr; }
+    #score-panel { position: static; }
+  }
+
+  /* ── Buttons ── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+    text-decoration: none;
+  }
+  .btn-primary {
+    background: var(--terra);
+    color: var(--white);
+  }
+  .btn-primary:hover { background: var(--terra-lt); }
+  .btn-outline {
+    background: transparent;
+    color: var(--navy);
+    border: 2px solid var(--navy);
+  }
+  .btn-outline:hover { background: var(--navy); color: var(--white); }
+  .btn-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  /* ── Empty state ── */
+  .empty-state {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: var(--mid-gray);
+  }
+  .empty-state .es-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+  .empty-state p { font-size: 0.9rem; }
+
+  /* ── Print styles ── */
+  @media print {
+    header { background: #1B2A4A !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .btn-row, .lens-toggle .chevron { display: none; }
+    .lens-body { display: flex !important; }
+    #score-panel { position: static; }
+    .two-col { grid-template-columns: 1fr; }
+    .lens-toggle { background: #1B2A4A !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .card-header { background: #1B2A4A !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    body { font-size: 12pt; }
+    .card { box-shadow: none; border: 1pt solid #ccc; }
+    .rating-btn.selected { border: 2pt solid #333 !important; }
+  }
+
+  /* ── Notification ── */
+  .notif {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    background: var(--navy);
+    color: var(--white);
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    z-index: 1000;
+    transform: translateY(2rem);
+    opacity: 0;
+    transition: all 0.25s;
+    pointer-events: none;
+  }
+  .notif.show { transform: translateY(0); opacity: 1; }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="eyebrow">Planning Tool</p>
+  <h1>Equity Consideration Tool</h1>
+  <p>A structured lens for building equity into your work from the start — not bolting it on at the end.</p>
+</header>
+
+<div class="main-wrap">
+
+  <!-- ── Input Section ── -->
+  <div class="card" id="input-section">
+    <div class="card-header">
+      <div class="badge">Step 1</div>
+      <h2>Describe Your Project or Initiative</h2>
+    </div>
+    <div class="card-body">
+      <div class="field-group">
+        <div>
+          <label for="proj-name">Project / Business / Initiative Name</label>
+          <input type="text" id="proj-name" placeholder="e.g. Community Health Clinic Expansion" />
+        </div>
+        <div>
+          <label for="proj-desc">What are you planning? <span style="font-weight:400;color:var(--mid-gray)">(2–3 sentences)</span></label>
+          <textarea id="proj-desc" rows="3" placeholder="Briefly describe the project, its goals, and the context in which it will operate."></textarea>
+        </div>
+        <div>
+          <label for="proj-audience">Who is the intended audience or beneficiary?</label>
+          <textarea id="proj-audience" rows="2" placeholder="Who are you trying to serve, reach, or benefit with this work?"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Assessment + Score Panel ── -->
+  <div class="two-col">
+
+    <!-- Lens Assessment -->
+    <div>
+      <div class="card">
+        <div class="card-header">
+          <div class="badge">Step 2</div>
+          <h2>Assess Each Equity Lens</h2>
+        </div>
+        <div class="card-body" id="lenses-container"></div>
+      </div>
+    </div>
+
+    <!-- Score Panel -->
+    <div id="score-panel">
+      <div class="card">
+        <div class="card-header">
+          <h2>Equity Readiness</h2>
+        </div>
+        <div class="card-body" id="score-body">
+          <div class="empty-state">
+            <div class="es-icon">◎</div>
+            <p>Rate at least one lens above to see your Equity Readiness Score.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Export / Actions ── -->
+  <div class="card" id="export-section">
+    <div class="card-header">
+      <div class="badge">Export</div>
+      <h2>Use This Assessment</h2>
+    </div>
+    <div class="card-body">
+      <p style="font-size:0.9rem;color:var(--mid-gray);margin-bottom:0.25rem;">Export your completed assessment to share with collaborators, bring to a planning meeting, or add to your risk log.</p>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="copyReport()">⊕ Copy Summary to Clipboard</button>
+        <button class="btn btn-outline" onclick="window.print()">⊟ Print / Save as PDF</button>
+        <button class="btn btn-outline" onclick="clearAll()">↺ Reset</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="notif" id="notif"></div>
+
+<script>
+// ── Data ──────────────────────────────────────────────────────────────────
+
+const LENSES = [
+  {
+    id: 'benefits',
+    name: 'Who Benefits? Who Bears the Cost?',
+    framing: 'Understand who gains from this work and who absorbs the burden.',
+    prompts: [
+      'Who are the intended beneficiaries of this project or initiative?',
+      'Who else might benefit in ways not originally intended?',
+      'Who bears the costs, risks, or burdens — and are they the same people who benefit?',
+      'Are there communities who will be affected but have no voice in the planning?'
+    ]
+  },
+  {
+    id: 'access',
+    name: 'Access & Inclusion',
+    framing: 'Examine what barriers prevent full and equal participation.',
+    prompts: [
+      'Who might be excluded from participating, accessing, or benefiting?',
+      'What barriers exist — economic, geographic, linguistic, cultural, physical, digital?',
+      'What would full access look like, and what is the gap between that and the current design?'
+    ]
+  },
+  {
+    id: 'representation',
+    name: 'Representation & Voice',
+    framing: 'Whose perspectives shaped this work, and whose are missing?',
+    prompts: [
+      'Who has been involved in designing this? Who has not?',
+      'Whose expertise, experience, and perspective is centered? Whose is missing?',
+      'Are the people most affected by this decision involved in making it?'
+    ]
+  },
+  {
+    id: 'history',
+    name: 'Historical & Structural Context',
+    framing: 'Situate this work within systems and histories that shape the present.',
+    prompts: [
+      'Does this project interact with communities that have experienced historical harm, exclusion, or disinvestment?',
+      'Does it build on — or risk reinforcing — existing systems of inequality (housing, education, healthcare, wealth, criminal justice)?',
+      'What context would someone from a marginalized community bring that planners might not see?'
+    ]
+  },
+  {
+    id: 'power',
+    name: 'Distribution of Power',
+    framing: 'Examine who controls decisions, resources, and outcomes.',
+    prompts: [
+      'Who controls the resources, decisions, and outcomes of this project?',
+      'Are there ways power could be more distributed — shared governance, participatory budgeting, co-ownership?',
+      'Who has the power to exit or opt out if things go wrong? Who does not?'
+    ]
+  },
+  {
+    id: 'data',
+    name: 'Data & Measurement',
+    framing: 'Question whose definition of success is being measured and how.',
+    prompts: [
+      'How will success be measured, and whose definition of success is being used?',
+      'Will data be collected that can track disparate outcomes across different groups?',
+      'Are there ways the metrics themselves could obscure inequity — for example, averaging over a population that masks gaps?'
+    ]
+  },
+  {
+    id: 'consequences',
+    name: 'Unintended Consequences',
+    framing: 'Surface harm that could emerge even without harmful intent.',
+    prompts: [
+      'What could go wrong specifically for vulnerable or marginalized groups?',
+      'Could this displace, harm, or crowd out communities even if that is not the intent?',
+      'Who should be consulted before launch to surface blind spots?'
+    ]
+  },
+  {
+    id: 'accountability',
+    name: 'Commitment & Accountability',
+    framing: 'Turn equity from aspiration into operational substance.',
+    prompts: [
+      'What specific, concrete equity commitments are being made — not aspirations, but actions?',
+      'Who is accountable for those commitments, and how will they be tracked?',
+      'Is equity a stated value without operational substance, or is it built into governance, budgets, and decisions?'
+    ]
+  }
+];
+
+const RATINGS = [
+  { val: 1, label: 'Not considered / significant gaps' },
+  { val: 2, label: 'Partially considered / some gaps identified' },
+  { val: 3, label: 'Meaningfully addressed / most gaps mitigated' },
+  { val: 4, label: 'Deeply embedded / equity is structural' }
+];
+
+// Per-lens action suggestions (used when a lens scores low)
+const ACTIONS = {
+  benefits: [
+    'Map all affected stakeholder groups — not just the intended beneficiaries — and explicitly document who bears the burdens.',
+    'Hold a structured listening session with affected communities who currently have no voice in planning.',
+    'Create a simple cost-benefit matrix that disaggregates outcomes by community group.'
+  ],
+  access: [
+    'Conduct an access audit: walk through each touchpoint and ask "who cannot get here from here?"',
+    'Identify the three most significant barriers (cost, language, geography, digital) and build removal strategies into the project budget.',
+    'Set a specific access target: what percentage of the intended beneficiaries can realistically reach this program as currently designed?'
+  ],
+  representation: [
+    'Formally bring in at least two community advisors from the most affected populations — with paid stipends, not just honorary inclusion.',
+    'Audit your design team: identify whose voices drove decisions and whose perspectives are structurally absent.',
+    'Build a participatory review checkpoint into the timeline before any public launch.'
+  ],
+  history: [
+    'Research the specific history of this community with similar programs, policies, or institutions — and share that research with your team.',
+    'Invite a community historian or cultural competency advisor to brief your planning team.',
+    'Document explicitly how your project is designed to avoid repeating known patterns of harm.'
+  ],
+  power: [
+    'Identify the three key decisions in this project and ask who currently controls each — then design for redistribution.',
+    'Explore a shared governance model: an advisory board, co-design process, or participatory budgeting element.',
+    'Create a documented exit protocol: what happens to community members if this program ends or changes?'
+  ],
+  data: [
+    'Define success metrics that reflect the priorities of affected communities — not just program operators.',
+    'Commit to disaggregating all outcome data by relevant demographic and geographic variables.',
+    'Establish a data review process that includes community stakeholders, not just internal evaluators.'
+  ],
+  consequences: [
+    'Commission a rapid displacement or harm assessment focused on the most vulnerable groups in the project\'s scope.',
+    'Create a formal pre-launch consultation: bring draft plans to community members for honest critique before commitments are made.',
+    'Build a feedback and course-correction mechanism into the first phase of rollout.'
+  ],
+  accountability: [
+    'Turn your equity goals into specific, time-bound commitments with named owners and quarterly check-ins.',
+    'Add an equity accountability item to your regular governance agenda — not as a separate workstream, but embedded in core decision-making.',
+    'Publish your equity commitments externally and create a mechanism for community stakeholders to hold you to them.'
+  ]
+};
+
+// ── State ────────────────────────────────────────────────────────────────
+const state = {};
+LENSES.forEach(l => { state[l.id] = { rating: null, notes: '' }; });
+
+// ── Render Lenses ─────────────────────────────────────────────────────────
+function buildLenses() {
+  const container = document.getElementById('lenses-container');
+  container.innerHTML = '';
+
+  LENSES.forEach((lens, idx) => {
+    const section = document.createElement('div');
+    section.className = 'lens-section';
+    section.id = 'lens-' + lens.id;
+
+    // Toggle button
+    const toggle = document.createElement('button');
+    toggle.className = 'lens-toggle' + (idx === 0 ? ' open' : '');
+    toggle.setAttribute('aria-expanded', idx === 0 ? 'true' : 'false');
+    toggle.innerHTML = `
+      <span class="lens-num">${idx + 1}</span>
+      <span class="lens-title-wrap">
+        <span class="lens-name">${lens.name}</span>
+        <span class="lens-framing">${lens.framing}</span>
+      </span>
+      <span class="lens-score-badge" id="badge-${lens.id}">—</span>
+      <span class="chevron">▼</span>
+    `;
+    toggle.addEventListener('click', () => {
+      const isOpen = body.classList.contains('open');
+      body.classList.toggle('open', !isOpen);
+      toggle.classList.toggle('open', !isOpen);
+      toggle.setAttribute('aria-expanded', String(!isOpen));
+    });
+
+    // Body
+    const body = document.createElement('div');
+    body.className = 'lens-body' + (idx === 0 ? ' open' : '');
+
+    // Prompts
+    const promptBox = document.createElement('div');
+    promptBox.className = 'prompts-box';
+    promptBox.innerHTML = `<p>Consider these questions</p><ul>${lens.prompts.map(p => `<li>${p}</li>`).join('')}</ul>`;
+    body.appendChild(promptBox);
+
+    // Rating label
+    const ratingLabelRow = document.createElement('div');
+    ratingLabelRow.className = 'rating-label-row';
+    ratingLabelRow.innerHTML = `
+      <label>How well does your project address this lens?</label>
+      <span class="rating-hint">Select 1–4</span>
+    `;
+    body.appendChild(ratingLabelRow);
+
+    // Rating grid
+    const rGrid = document.createElement('div');
+    rGrid.className = 'rating-grid';
+    RATINGS.forEach(r => {
+      const btn = document.createElement('button');
+      btn.className = 'rating-btn';
+      btn.dataset.val = r.val;
+      btn.dataset.lens = lens.id;
+      btn.innerHTML = `<span class="r-num">${r.val}</span><span class="r-label">${r.label}</span>`;
+      btn.addEventListener('click', () => selectRating(lens.id, r.val));
+      rGrid.appendChild(btn);
+    });
+    body.appendChild(rGrid);
+
+    // Notes
+    const notesLabel = document.createElement('label');
+    notesLabel.setAttribute('for', 'notes-' + lens.id);
+    notesLabel.textContent = 'Notes — what are you doing, and where are the gaps?';
+    body.appendChild(notesLabel);
+
+    const notesArea = document.createElement('textarea');
+    notesArea.id = 'notes-' + lens.id;
+    notesArea.rows = 3;
+    notesArea.placeholder = 'Be honest about what has and has not been considered. Specific gaps are more useful than general statements.';
+    notesArea.addEventListener('input', () => { state[lens.id].notes = notesArea.value; });
+    body.appendChild(notesArea);
+
+    section.appendChild(toggle);
+    section.appendChild(body);
+    container.appendChild(section);
+  });
+}
+
+function selectRating(lensId, val) {
+  state[lensId].rating = val;
+
+  // Update buttons
+  const btns = document.querySelectorAll(`.rating-btn[data-lens="${lensId}"]`);
+  btns.forEach(b => {
+    b.classList.toggle('selected', parseInt(b.dataset.val) === val);
+  });
+
+  // Update badge
+  const badge = document.getElementById('badge-' + lensId);
+  if (badge) {
+    badge.textContent = val + '/4';
+    const colors = { 1: '#C0392B', 2: '#D68910', 3: '#27AE60', 4: '#1A8C4E' };
+    badge.style.background = colors[val] || '';
+    badge.style.color = '#fff';
+  }
+
+  updateScorePanel();
+}
+
+// ── Score Panel ───────────────────────────────────────────────────────────
+function updateScorePanel() {
+  const rated = LENSES.filter(l => state[l.id].rating !== null);
+  const scoreBody = document.getElementById('score-body');
+
+  if (rated.length === 0) {
+    scoreBody.innerHTML = `<div class="empty-state"><div class="es-icon">◎</div><p>Rate at least one lens above to see your Equity Readiness Score.</p></div>`;
+    return;
+  }
+
+  const avg = rated.reduce((sum, l) => sum + state[l.id].rating, 0) / rated.length;
+  const score = Math.round((avg / 4) * 100);
+
+  // Band
+  let bandName, bandDesc, barColor;
+  if (score >= 85) {
+    bandName = 'Equity-Centered';
+    bandDesc = 'Equity is structurally embedded in the work.';
+    barColor = '#1A8C4E';
+  } else if (score >= 65) {
+    bandName = 'Equity-Aware';
+    bandDesc = 'Meaningful consideration with identified gaps.';
+    barColor = '#27AE60';
+  } else if (score >= 45) {
+    bandName = 'Equity-Emerging';
+    bandDesc = 'Early attention, but significant blind spots remain.';
+    barColor = '#D68910';
+  } else {
+    bandName = 'Equity-Absent';
+    bandDesc = 'Significant risk of reinforcing or creating harm.';
+    barColor = '#C0392B';
+  }
+
+  // Strongest + biggest gap (from rated lenses)
+  const sortedRated = [...rated].sort((a, b) => state[b.id].rating - state[a.id].rating);
+  const strongest = sortedRated[0];
+  const weakest = sortedRated[sortedRated.length - 1];
+
+  // Action prompts: 3 lowest-rated lenses
+  const lowestLenses = [...rated].sort((a, b) => state[a.id].rating - state[b.id].rating).slice(0, 3);
+
+  // Lens bars
+  const barsHtml = LENSES.map(l => {
+    const r = state[l.id].rating;
+    const pct = r ? (r / 4) * 100 : 0;
+    const shortName = l.name.length > 20 ? l.name.slice(0, 19) + '…' : l.name;
+    return `
+      <div class="lens-bar-row">
+        <span class="lens-bar-name" title="${l.name}">${shortName}</span>
+        <div class="lens-bar-track"><div class="lens-bar-fill" style="width:${pct}%;background:${r ? barColor : 'var(--border)'};"></div></div>
+        <span class="lens-bar-val">${r !== null ? r : '—'}</span>
+      </div>`;
+  }).join('');
+
+  // Action items
+  const actionItems = lowestLenses.map((l, i) => {
+    const actionPool = ACTIONS[l.id];
+    const action = actionPool[Math.min(state[l.id].rating - 1, actionPool.length - 1)] || actionPool[0];
+    return `
+      <div class="action-item">
+        <span class="action-num">${i + 1}</span>
+        <p><strong>${l.name}:</strong> ${action}</p>
+      </div>`;
+  }).join('');
+
+  scoreBody.innerHTML = `
+    <div class="score-circle-wrap">
+      <div class="score-circle" style="border-color:${barColor};">
+        <span class="score-num" style="color:${barColor};">${score}</span>
+        <span class="score-denom">out of 100</span>
+      </div>
+    </div>
+
+    <div class="score-band">
+      <span class="band-name" style="color:${barColor};">${bandName}</span>
+      <span class="band-desc">${bandDesc}</span>
+    </div>
+
+    <div class="score-bar-wrap">
+      <div class="score-bar-track">
+        <div class="score-bar-fill" style="width:${score}%;background:${barColor};"></div>
+      </div>
+    </div>
+
+    <div class="lens-bars">${barsHtml}</div>
+
+    ${rated.length > 1 ? `
+    <div class="highlights">
+      <div class="highlight-item strong">
+        <div class="hi-label">✦ Strongest Lens</div>
+        <div class="hi-value">${strongest.name} (${state[strongest.id].rating}/4)</div>
+      </div>
+      <div class="highlight-item gap">
+        <div class="hi-label">⚑ Biggest Gap</div>
+        <div class="hi-value">${weakest.name} (${state[weakest.id].rating}/4)</div>
+      </div>
+    </div>` : ''}
+
+    <div class="action-prompts">
+      <h3>Suggested Next Steps</h3>
+      ${actionItems}
+    </div>
+
+    <div class="use-guidance">
+      <h3>What to Do With This</h3>
+      <p>This assessment is a starting point, not a verdict. Here's how to put it to work:</p>
+      <ul>
+        <li>Share the full summary with your core team and discuss the gaps honestly.</li>
+        <li>Bring the lowest-scoring lenses to a community advisory board or trusted critic.</li>
+        <li>Add identified gaps to your project risk log with owners and timelines.</li>
+        <li>Revisit this assessment at each major project milestone.</li>
+        <li>Use the action steps above as agenda items, not aspirational notes.</li>
+      </ul>
+    </div>
+  `;
+}
+
+// ── Copy Report ───────────────────────────────────────────────────────────
+function copyReport() {
+  const name = document.getElementById('proj-name').value.trim() || 'Unnamed Project';
+  const desc = document.getElementById('proj-desc').value.trim();
+  const audience = document.getElementById('proj-audience').value.trim();
+
+  const rated = LENSES.filter(l => state[l.id].rating !== null);
+  if (rated.length === 0) {
+    showNotif('Rate at least one lens first.');
+    return;
+  }
+
+  const avg = rated.reduce((sum, l) => sum + state[l.id].rating, 0) / rated.length;
+  const score = Math.round((avg / 4) * 100);
+  const date = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+  let band;
+  if (score >= 85) band = 'Equity-Centered';
+  else if (score >= 65) band = 'Equity-Aware';
+  else if (score >= 45) band = 'Equity-Emerging';
+  else band = 'Equity-Absent';
+
+  let text = `EQUITY CONSIDERATION ASSESSMENT\n`;
+  text += `${'═'.repeat(50)}\n`;
+  text += `Project: ${name}\n`;
+  text += `Date: ${date}\n`;
+  text += `Equity Readiness Score: ${score}/100 — ${band}\n\n`;
+
+  if (desc) text += `DESCRIPTION\n${desc}\n\n`;
+  if (audience) text += `INTENDED BENEFICIARIES\n${audience}\n\n`;
+
+  text += `LENS RATINGS\n${'─'.repeat(40)}\n`;
+  LENSES.forEach((lens, i) => {
+    const r = state[lens.id].rating;
+    const rLabel = r ? RATINGS.find(x => x.val === r).label : 'Not rated';
+    text += `\n${i + 1}. ${lens.name}\n`;
+    text += `   Rating: ${r ? r + '/4' : '—'} — ${rLabel}\n`;
+    if (state[lens.id].notes.trim()) {
+      text += `   Notes: ${state[lens.id].notes.trim()}\n`;
+    }
+  });
+
+  const lowestLenses = [...rated].sort((a, b) => state[a.id].rating - state[b.id].rating).slice(0, 3);
+  if (lowestLenses.length > 0) {
+    text += `\nSUGGESTED NEXT STEPS\n${'─'.repeat(40)}\n`;
+    lowestLenses.forEach((l, i) => {
+      const actionPool = ACTIONS[l.id];
+      const action = actionPool[Math.min(state[l.id].rating - 1, actionPool.length - 1)] || actionPool[0];
+      text += `\n${i + 1}. [${l.name}] ${action}\n`;
+    });
+  }
+
+  text += `\n${'─'.repeat(40)}\nGenerated by Equity Consideration Tool\n`;
+
+  navigator.clipboard.writeText(text).then(() => {
+    showNotif('Summary copied to clipboard!');
+  }).catch(() => {
+    // fallback
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showNotif('Summary copied!');
+  });
+}
+
+// ── Clear ─────────────────────────────────────────────────────────────────
+function clearAll() {
+  if (!confirm('Reset all ratings and notes? This cannot be undone.')) return;
+  document.getElementById('proj-name').value = '';
+  document.getElementById('proj-desc').value = '';
+  document.getElementById('proj-audience').value = '';
+
+  LENSES.forEach(l => {
+    state[l.id] = { rating: null, notes: '' };
+    const badge = document.getElementById('badge-' + l.id);
+    if (badge) { badge.textContent = '—'; badge.style.background = ''; badge.style.color = ''; }
+    const btns = document.querySelectorAll(`.rating-btn[data-lens="${l.id}"]`);
+    btns.forEach(b => b.classList.remove('selected'));
+    const ta = document.getElementById('notes-' + l.id);
+    if (ta) ta.value = '';
+  });
+
+  updateScorePanel();
+  showNotif('Assessment reset.');
+}
+
+// ── Notif ─────────────────────────────────────────────────────────────────
+function showNotif(msg) {
+  const n = document.getElementById('notif');
+  n.textContent = msg;
+  n.classList.add('show');
+  setTimeout(() => n.classList.remove('show'), 2800);
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────
+buildLenses();
+</script>
+</body>
+</html>
