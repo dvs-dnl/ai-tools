@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{POST_TITLE}} — Trail Manual</title>
+<meta name="description" content="{{POST_DESCRIPTION}}">
+<link rel="stylesheet" href="/_shared.css">
+<style>
+  .post-header { padding: 48px 0 36px; border-bottom: 1px solid var(--border); margin-bottom: 40px; border-top: 3px solid var(--accent-2); }
+  .post-meta { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
+  .post-meta .date { font-size: 13px; color: var(--text-mute); }
+  .post-body { max-width: 720px; }
+  .post-body h2 { font-family: var(--font-serif); font-size: 22px; color: var(--text); margin: 36px 0 12px; }
+  .post-body h3 { font-size: 17px; font-weight: 600; color: var(--text); margin: 28px 0 10px; }
+  .post-body p  { font-size: 16px; color: var(--text-dim); line-height: 1.75; margin-bottom: 18px; }
+  .post-body ul, .post-body ol { margin: 0 0 18px 20px; }
+  .post-body li { font-size: 16px; color: var(--text-dim); line-height: 1.7; margin-bottom: 6px; }
+  .post-body strong { color: var(--text); font-weight: 600; }
+  .post-body a { color: var(--accent); }
+  .post-callout { background: #eaf3de; border: 1px solid #c0dd97; border-radius: 10px; padding: 20px 24px; margin: 28px 0; font-size: 15px; color: var(--text-dim); }
+  .post-callout strong { color: var(--text); display: block; margin-bottom: 6px; }
+  .post-related { margin-top: 48px; padding-top: 32px; border-top: 1px solid var(--border); }
+  .post-related h3 { font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-mute); margin-bottom: 16px; }
+</style>
+</head>
+<body>
+
+<header class="tm-topbar">
+  <div class="tm-topbar-inner">
+    <a class="tm-brand" href="/">
+      <div class="tm-brand-mark">TM</div>
+      <div>
+        <div class="tm-brand-text">Trail Manual</div>
+        <div class="tm-brand-sub">Built in the driveway</div>
+      </div>
+    </a>
+    <nav class="tm-nav">
+      <a href="/">Home</a>
+      <a href="/tools/">Tools</a>
+      <a href="/blog/" class="active">Blog</a>
+      <a href="/about/">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="tm-main">
+
+  <div class="post-header">
+    <div class="post-meta">
+      <span class="tag">{{POST_CATEGORY}}</span>
+      <span class="date">{{POST_DATE}}</span>
+    </div>
+    <h1 style="font-family: var(--font-serif); font-size: clamp(24px, 3.5vw, 36px); color: var(--text); line-height: 1.2; max-width: 720px;">{{POST_TITLE}}</h1>
+    <p style="font-size: 17px; color: var(--text-dim); max-width: 620px; margin-top: 14px; line-height: 1.7;">{{POST_LEDE}}</p>
+  </div>
+
+  <div class="post-body">
+
+    {{POST_BODY}}
+
+    <div class="post-related">
+      <h3>Related tools &amp; entries</h3>
+      <div class="tm-grid-2" style="margin-top:0">
+        {{POST_RELATED_LINKS}}
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<footer class="tm-footer">
+  <div class="tm-footer-inner">
+    <div>
+      <div class="tm-brand" style="margin-bottom:12px">
+        <div class="tm-brand-mark">TM</div>
+        <div>
+          <div class="tm-brand-text">Trail Manual</div>
+          <div class="tm-brand-sub">trailmanual.com</div>
+        </div>
+      </div>
+      <p style="color:rgba(255,255,255,0.35);font-size:13px;max-width:260px;margin:0">Free DIY reference for off-road vehicle owners.</p>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <a href="/db/">XJ Database</a>
+      <a href="/db/death-wobble-guide.html">Death Wobble Guide</a>
+      <a href="/tools/">All tools →</a>
+    </div>
+    <div>
+      <h4>Content</h4>
+      <a href="/blog/">Blog</a>
+      <a href="/about/#roadmap">Roadmap</a>
+    </div>
+    <div>
+      <h4>About</h4>
+      <a href="/about/">About Trail Manual</a>
+      <a href="/contact/">Contact</a>
+    </div>
+  </div>
+  <div class="disclaimer">
+    Modifications affect vehicle safety and warranty — work at your own risk. © Trail Manual, 2026.
+  </div>
+</footer>
+
+</body>
+</html>
