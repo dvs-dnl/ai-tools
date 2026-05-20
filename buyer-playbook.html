@@ -1,0 +1,918 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Used Car Buyer's Playbook — Trail Manual</title>
+<meta name="description" content="Step-by-step buying playbook for used vehicles: walk-around order, test drive script, seller questions, model-specific red flags, and negotiation cues — tailored to your make and model.">
+<style>
+  :root{
+    --bg:#0e1116; --bg-2:#171b22; --bg-3:#1f242d;
+    --panel:#1a1f27; --panel-2:#222831; --border:#2c333e;
+    --text:#e6e8eb; --text-dim:#9aa3b1; --text-mute:#6b7280;
+    --accent:#c5a572;
+    --accent-2:#7a8c4f;
+    --accent-3:#b86e3a;
+    --danger:#e57373; --danger-bg:rgba(229,115,115,.1); --danger-border:rgba(229,115,115,.35);
+    --warn:#ffb74d; --warn-bg:rgba(255,183,77,.1); --warn-border:rgba(255,183,77,.35);
+    --good:#81c784; --good-bg:rgba(129,199,132,.1); --good-border:rgba(129,199,132,.35);
+    --info:#64b5f6; --info-bg:rgba(100,181,246,.1); --info-border:rgba(100,181,246,.35);
+    --radius:8px; --radius-lg:12px;
+    --shadow:0 4px 24px rgba(0,0,0,.35);
+    --max:1020px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  button{font:inherit;cursor:pointer}
+  input,select{font:inherit}
+
+  /* Topbar */
+  .topbar{position:sticky;top:0;z-index:50;background:linear-gradient(180deg,#0e1116 0%,rgba(14,17,22,.95) 100%);backdrop-filter:saturate(120%) blur(10px);border-bottom:1px solid var(--border)}
+  .topbar-inner{max-width:var(--max);margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;text-decoration:none;color:var(--text)}
+  .brand:hover{text-decoration:none}
+  .brand-mark{width:32px;height:32px;background:var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center;color:#1a1f27;font-weight:900;font-size:15px;flex-shrink:0}
+  .brand-text{font-size:14px;letter-spacing:-.2px}
+  .brand-sub{color:var(--text-dim);font-size:10px;font-weight:400;letter-spacing:.3px;text-transform:uppercase}
+  .topbar-spacer{flex:1}
+  .topbar-link{font-size:12px;color:var(--text-dim);padding:5px 9px;border-radius:5px}
+  .topbar-link:hover{color:var(--text);background:var(--bg-2);text-decoration:none}
+
+  /* Progress strip */
+  .progress-strip{background:var(--bg-2);border-bottom:1px solid var(--border);padding:8px 20px}
+  .progress-strip-inner{max-width:var(--max);margin:0 auto;display:flex;align-items:center;gap:12px}
+  .progress-bar-wrap{flex:1;height:6px;background:var(--bg-3);border-radius:3px;overflow:hidden}
+  .progress-bar-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .3s ease}
+  .progress-label{font-size:12px;color:var(--text-dim);white-space:nowrap}
+  .progress-reset{font-size:11px;color:var(--text-mute);background:none;border:none;padding:0;cursor:pointer}
+  .progress-reset:hover{color:var(--danger)}
+
+  main{max-width:var(--max);margin:0 auto;padding:28px 20px 100px}
+
+  /* Hero */
+  .hero{padding:32px 28px;background:linear-gradient(135deg,#1a1c14 0%,#181a22 50%,#161b22 100%);border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:24px;position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;top:-30%;right:-5%;width:240px;height:240px;background:radial-gradient(circle,rgba(197,165,114,.2) 0%,transparent 70%)}
+  .hero h1{font-size:28px;letter-spacing:-.5px;margin:0 0 10px;line-height:1.15;position:relative}
+  .hero p{position:relative;color:var(--text-dim);max-width:680px;margin:0;font-size:14px}
+  .hero-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;position:relative;font-size:12px;color:var(--text-mute)}
+  .hero-meta span::before{content:'· '}
+  .hero-meta span:first-child::before{content:''}
+
+  /* Model picker */
+  .model-picker-wrap{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:24px}
+  .model-picker-wrap h2{font-size:14px;text-transform:uppercase;letter-spacing:.6px;color:var(--accent);margin:0 0 12px;font-weight:700}
+  .picker-row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+  .field-group{display:flex;flex-direction:column;gap:4px;min-width:160px;flex:1}
+  .field-group label{font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.4px;font-weight:600}
+  .field-group select{background:var(--bg-2);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:8px 10px;font-size:13px}
+  .field-group select:focus{outline:none;border-color:var(--accent)}
+  .picker-tip{font-size:12px;color:var(--text-mute);margin-top:10px}
+  .climate-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:10px;font-size:11px;font-weight:600;background:rgba(255,183,77,.1);color:var(--warn);border:1px solid rgba(255,183,77,.3)}
+
+  /* Sections */
+  .section{margin-bottom:32px}
+  .section-header{display:flex;align-items:center;gap:14px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+  .section-num{width:36px;height:36px;border-radius:50%;background:var(--accent);color:#1a1f27;font-weight:900;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .section-title{font-size:18px;font-weight:700;letter-spacing:-.2px;margin:0}
+  .section-sub{font-size:12px;color:var(--text-mute);margin:2px 0 0}
+  .section-time{font-size:11px;color:var(--text-mute);background:var(--bg-2);border:1px solid var(--border);border-radius:10px;padding:2px 8px;margin-left:auto;white-space:nowrap}
+
+  /* Checklist items */
+  .checklist{display:flex;flex-direction:column;gap:8px}
+  .check-item{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:border-color .15s}
+  .check-item.done{border-color:rgba(129,199,132,.35);background:rgba(129,199,132,.04)}
+  .check-item.flagged{border-color:rgba(229,115,115,.35);background:rgba(229,115,115,.04)}
+  .check-head{display:grid;grid-template-columns:40px 1fr auto;gap:10px;padding:12px 14px;align-items:center;cursor:pointer;user-select:none}
+  .check-head:hover .check-title{color:var(--accent)}
+  .check-box{width:24px;height:24px;border:2px solid var(--border);border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;font-size:13px}
+  .check-item.done .check-box{background:var(--good);border-color:var(--good);color:#0e1116}
+  .check-item.flagged .check-box{background:var(--danger);border-color:var(--danger);color:#0e1116}
+  .check-title{font-weight:600;font-size:14px;transition:color .15s}
+  .check-item.done .check-title{color:var(--text-dim);text-decoration:line-through}
+  .check-sub{font-size:11px;color:var(--text-mute);margin-top:1px}
+  .check-expand{font-size:16px;color:var(--text-mute);transition:transform .2s;flex-shrink:0}
+  .check-item.open .check-expand{transform:rotate(90deg)}
+  .check-body{padding:0 14px 14px;border-top:1px solid var(--border);display:none}
+  .check-item.open .check-body{display:block}
+  .check-body p{margin:10px 0 0;font-size:13px;color:var(--text-dim);line-height:1.55}
+  .check-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+  .action-btn{padding:6px 12px;font-size:12px;border-radius:6px;border:1px solid var(--border);background:var(--bg-2);color:var(--text-dim);cursor:pointer;transition:all .15s}
+  .action-btn:hover{color:var(--text);border-color:var(--accent)}
+  .action-btn.good-btn{background:var(--good-bg);border-color:var(--good-border);color:var(--good)}
+  .action-btn.bad-btn{background:var(--danger-bg);border-color:var(--danger-border);color:var(--danger)}
+  .action-btn.active{box-shadow:0 0 0 2px var(--accent)}
+  .check-note{margin-top:10px}
+  .check-note textarea{width:100%;background:var(--bg-2);border:1px solid var(--border);border-radius:5px;color:var(--text);padding:8px;font-size:12px;resize:vertical;min-height:52px}
+  .check-note textarea:focus{outline:none;border-color:var(--accent)}
+  .check-note textarea::placeholder{color:var(--text-mute)}
+  .model-flag{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:8px;font-size:10px;font-weight:700;background:rgba(229,115,115,.12);color:var(--danger);border:1px solid rgba(229,115,115,.3);margin-left:6px}
+
+  /* Info boxes */
+  .tip-box{background:var(--bg-2);border-left:3px solid var(--accent);padding:10px 14px;margin:12px 0;border-radius:0 6px 6px 0;font-size:13px;color:var(--text-dim)}
+  .tip-box strong{color:var(--text)}
+  .warn-box{background:var(--warn-bg);border:1px solid var(--warn-border);padding:12px 14px;border-radius:var(--radius);font-size:13px;color:var(--text);margin-bottom:14px}
+  .warn-box strong{color:var(--warn)}
+  .danger-box{background:var(--danger-bg);border:1px solid var(--danger-border);padding:12px 14px;border-radius:var(--radius);font-size:13px;color:var(--text);margin-bottom:14px}
+  .danger-box strong{color:var(--danger)}
+  .good-box{background:var(--good-bg);border:1px solid var(--good-border);padding:12px 14px;border-radius:var(--radius);font-size:13px;color:var(--text);margin-bottom:14px}
+  .good-box strong{color:var(--good)}
+
+  /* Maneuver cards (test drive) */
+  .maneuver-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+  .maneuver{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:16px;transition:border-color .15s;cursor:pointer}
+  .maneuver:hover{border-color:var(--border)}
+  .maneuver.done{border-color:rgba(129,199,132,.35);background:rgba(129,199,132,.04)}
+  .maneuver-head{display:flex;align-items:flex-start;gap:12px}
+  .maneuver-letter{width:32px;height:32px;border-radius:6px;background:var(--bg-2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:var(--accent);flex-shrink:0}
+  .maneuver.done .maneuver-letter{background:var(--good);color:#0e1116;border-color:var(--good)}
+  .maneuver-name{font-weight:600;font-size:14px}
+  .maneuver-speed{font-size:11px;color:var(--text-mute);margin-top:1px}
+  .maneuver-desc{font-size:12px;color:var(--text-dim);margin-top:8px;line-height:1.5}
+  .maneuver-look{font-size:11px;color:var(--warn);margin-top:6px}
+
+  /* Questions */
+  .question-list{display:flex;flex-direction:column;gap:10px}
+  .question{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;transition:all .15s}
+  .question.asked{border-color:rgba(129,199,132,.3);background:var(--good-bg)}
+  .question.redflag{border-color:rgba(229,115,115,.3);background:var(--danger-bg)}
+  .q-num{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);font-weight:700;margin-bottom:4px}
+  .q-text{font-weight:600;font-size:14px;margin-bottom:6px}
+  .q-why{font-size:12px;color:var(--text-dim)}
+  .q-actions{display:flex;gap:8px;margin-top:10px}
+  .q-btn{padding:5px 10px;font-size:11px;border-radius:5px;border:1px solid var(--border);background:var(--bg-2);color:var(--text-dim);cursor:pointer}
+  .q-btn:hover{border-color:var(--accent);color:var(--text)}
+  .q-btn.green{background:var(--good-bg);border-color:var(--good-border);color:var(--good)}
+  .q-btn.red{background:var(--danger-bg);border-color:var(--danger-border);color:var(--danger)}
+
+  /* Walk-away triggers */
+  .trigger-list{display:flex;flex-direction:column;gap:8px}
+  .trigger{display:flex;gap:12px;padding:12px 14px;background:var(--danger-bg);border:1px solid var(--danger-border);border-radius:var(--radius);align-items:flex-start}
+  .trigger-icon{font-size:18px;flex-shrink:0;line-height:1.4}
+  .trigger-text strong{display:block;font-size:13px;margin-bottom:2px}
+  .trigger-text span{font-size:12px;color:var(--text-dim)}
+
+  /* Negotiation */
+  .neg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin-bottom:16px}
+  .neg-card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:16px}
+  .neg-card .nc-label{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);font-weight:700;margin-bottom:8px}
+  .neg-card h3{font-size:14px;margin:0 0 8px}
+  .neg-card p{font-size:12px;color:var(--text-dim);margin:0;line-height:1.5}
+
+  /* Model flags section */
+  .flag-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+  .flag-card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:14px;transition:border-color .15s}
+  .flag-card.active-model{border-color:var(--accent);background:rgba(197,165,114,.06)}
+  .flag-card h3{font-size:13px;font-weight:700;margin:0 0 8px;display:flex;align-items:center;gap:6px}
+  .flag-card ul{margin:0;padding:0 0 0 16px;font-size:12px;color:var(--text-dim)}
+  .flag-card li{margin-bottom:4px;line-height:1.4}
+
+  /* Phoenix climate section */
+  .climate-checks{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px}
+  .climate-check{background:rgba(255,183,77,.06);border:1px solid rgba(255,183,77,.25);border-radius:var(--radius);padding:12px 14px;cursor:pointer;transition:all .15s;display:flex;align-items:flex-start;gap:10px}
+  .climate-check.done{background:var(--good-bg);border-color:var(--good-border)}
+  .climate-cb{width:20px;height:20px;border:2px solid rgba(255,183,77,.5);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px}
+  .climate-check.done .climate-cb{background:var(--good);border-color:var(--good);color:#0e1116}
+  .climate-body strong{display:block;font-size:12px;font-weight:600;color:var(--warn)}
+  .climate-body span{font-size:11px;color:var(--text-dim)}
+
+  /* Summary sidebar */
+  .summary-bar{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(0deg,var(--bg) 70%,transparent);padding:14px 20px;z-index:40;pointer-events:none}
+  .summary-bar-inner{max-width:var(--max);margin:0 auto;pointer-events:all}
+  .summary-pill{background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:10px 18px;display:inline-flex;align-items:center;gap:14px;box-shadow:var(--shadow);font-size:13px}
+  .summary-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+  .dot-done{background:var(--good)}
+  .dot-flag{background:var(--danger)}
+
+  /* Print button */
+  .print-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:6px;background:var(--bg-2);border:1px solid var(--border);color:var(--text-dim);font-size:13px;cursor:pointer;margin-bottom:20px}
+  .print-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+  /* Footer */
+  footer{text-align:center;color:var(--text-mute);font-size:12px;padding:40px 20px 20px;border-top:1px solid var(--border)}
+
+  @media(max-width:600px){
+    .hero h1{font-size:22px}
+    .section-title{font-size:16px}
+    .maneuver-grid,.neg-grid,.flag-grid,.climate-checks{grid-template-columns:1fr}
+    .picker-row{flex-direction:column}
+    .field-group{min-width:unset;width:100%}
+  }
+  @media print{
+    .topbar,.progress-strip,.summary-bar,.print-btn{display:none}
+    .check-body{display:block!important}
+    .check-item{break-inside:avoid}
+    body{background:white;color:black}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a href="/" class="brand">
+      <div class="brand-mark">TM</div>
+      <div>
+        <div class="brand-text">Trail Manual</div>
+        <div class="brand-sub">Buyer's Playbook</div>
+      </div>
+    </a>
+    <div class="topbar-spacer"></div>
+    <a href="/out-the-door-price.html" class="topbar-link">OTD Calculator</a>
+    <a href="/vehicle-research-tool.html" class="topbar-link">Vehicle Research</a>
+  </div>
+</div>
+
+<div class="progress-strip">
+  <div class="progress-strip-inner">
+    <span class="progress-label" id="progress-text">0 of 0 items checked</span>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+    <button class="progress-reset" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main>
+
+  <div class="hero">
+    <h1>Used Car Buyer's Playbook</h1>
+    <p>A structured walk-around, test drive script, seller questions, and model-specific red flags — all in one place. Work through it start to finish before you hand over money.</p>
+    <div class="hero-meta">
+      <span>~45–60 min inspection</span>
+      <span>20–30 min test drive</span>
+      <span>Based on Consumer Reports, KBB, and mechanic-sourced protocols</span>
+    </div>
+  </div>
+
+  <!-- Model picker -->
+  <div class="model-picker-wrap">
+    <h2>Configure Your Playbook</h2>
+    <div class="picker-row">
+      <div class="field-group">
+        <label>Vehicle</label>
+        <select id="model-select" onchange="updateModel()">
+          <option value="generic">Any / Generic</option>
+          <option value="tacoma">Toyota Tacoma (2005–2023)</option>
+          <option value="civic">Honda Civic (2006–2015)</option>
+          <option value="outback">Subaru Outback (2010–2019)</option>
+          <option value="jk">Jeep Wrangler JK (2007–2018)</option>
+          <option value="f150">Ford F-150 (2009–2023)</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label>Climate</label>
+        <select id="climate-select" onchange="updateClimate()">
+          <option value="hot">Hot/Desert (Phoenix, Las Vegas, Tucson)</option>
+          <option value="cold">Cold/Salt (Northern states, rust belt)</option>
+          <option value="generic">Moderate / Generic</option>
+        </select>
+      </div>
+    </div>
+    <p class="picker-tip">Select your vehicle and region to highlight model-specific red flags and climate checks throughout the playbook.</p>
+  </div>
+
+  <button class="print-btn" onclick="window.print()">🖨 Print This Playbook</button>
+
+  <!-- SECTION 1: Pre-Visit -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <div>
+        <div class="section-title">Before You Go</div>
+        <div class="section-sub">Do this at home before the visit</div>
+      </div>
+      <div class="section-time">~15 min</div>
+    </div>
+    <div class="warn-box"><strong>⚠ Try to see the car cold.</strong> Call ahead and ask the seller not to warm it up first. A warm engine hides cold-start knocks, rough idle, and startup smoke that reveal bad head gaskets, worn rings, and misfires. If you arrive and it's already warm, note it.</div>
+    <div class="checklist" id="pre-list"></div>
+  </div>
+
+  <!-- SECTION 2: Exterior Walk-Around -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <div>
+        <div class="section-title">Exterior — Body & Paint</div>
+        <div class="section-sub">Stage 1 of 5 — Walk the car before touching anything</div>
+      </div>
+      <div class="section-time">~8 min</div>
+    </div>
+    <div class="tip-box"><strong>The panel gap test.</strong> Crouch at each corner and sight along the car's body. Factory panels have perfectly even gaps. Mismatched gaps between hood/fender, door/door, trunk/quarter-panel = past collision repair. Pair this with paint texture differences and paint "witness marks" on hinge bolts.</div>
+    <div class="checklist" id="exterior-list"></div>
+  </div>
+
+  <!-- SECTION 3: Engine Bay -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <div>
+        <div class="section-title">Engine Bay</div>
+        <div class="section-sub">Stage 2 of 5 — Do this before starting the engine if possible</div>
+      </div>
+      <div class="section-time">~10 min</div>
+    </div>
+    <div class="checklist" id="engine-list"></div>
+  </div>
+
+  <!-- SECTION 4: Interior -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <div>
+        <div class="section-title">Interior & Electronics</div>
+        <div class="section-sub">Stage 3 of 5</div>
+      </div>
+      <div class="section-time">~8 min</div>
+    </div>
+    <div class="checklist" id="interior-list"></div>
+  </div>
+
+  <!-- SECTION 5: Tires & Brakes -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">5</div>
+      <div>
+        <div class="section-title">Tires & Brakes</div>
+        <div class="section-sub">Stage 4 of 5</div>
+      </div>
+      <div class="section-time">~6 min</div>
+    </div>
+    <div class="checklist" id="tires-list"></div>
+  </div>
+
+  <!-- SECTION 6: Undercarriage -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">6</div>
+      <div>
+        <div class="section-title">Undercarriage</div>
+        <div class="section-sub">Stage 5 of 5 — Get low or use your phone camera</div>
+      </div>
+      <div class="section-time">~6 min</div>
+    </div>
+    <div class="checklist" id="under-list"></div>
+  </div>
+
+  <!-- SECTION 7: Climate checks -->
+  <div class="section" id="climate-section">
+    <div class="section-header">
+      <div class="section-num">7</div>
+      <div>
+        <div class="section-title" id="climate-title">Climate-Specific Checks</div>
+        <div class="section-sub" id="climate-sub">Additional checks for your region</div>
+      </div>
+      <div class="section-time" id="climate-time">~5 min</div>
+    </div>
+    <div id="climate-content"></div>
+  </div>
+
+  <!-- SECTION 8: Test Drive -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">8</div>
+      <div>
+        <div class="section-title">Test Drive Script</div>
+        <div class="section-sub">Six specific maneuvers — don't skip any</div>
+      </div>
+      <div class="section-time">20–30 min</div>
+    </div>
+    <div class="tip-box"><strong>Route tip.</strong> Plan a route that includes a parking lot (for circles + emergency stop), surface streets at 35–45 mph, and at least 5 minutes of highway driving. Pre-drive: turn on AC cold/full and leave it running the entire test drive.</div>
+    <div class="maneuver-grid" id="maneuver-grid"></div>
+  </div>
+
+  <!-- SECTION 9: Seller Questions -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">9</div>
+      <div>
+        <div class="section-title">Seller Questions</div>
+        <div class="section-sub">Ask all seven — watch how they answer, not just what they say</div>
+      </div>
+    </div>
+    <div class="question-list" id="question-list"></div>
+  </div>
+
+  <!-- SECTION 10: Model Red Flags -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">10</div>
+      <div>
+        <div class="section-title">Model-Specific Red Flags</div>
+        <div class="section-sub">Known problem patterns by vehicle</div>
+      </div>
+    </div>
+    <p style="font-size:13px;color:var(--text-dim);margin-bottom:14px">Your selected model is highlighted. These patterns come from NHTSA recall history, CarComplaints, and RepairPal's common problem databases.</p>
+    <div class="flag-grid" id="flag-grid"></div>
+  </div>
+
+  <!-- SECTION 11: Walk-Away Triggers -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">11</div>
+      <div>
+        <div class="section-title">Walk-Away Triggers</div>
+        <div class="section-sub">If any of these are true, leave — no exceptions</div>
+      </div>
+    </div>
+    <div class="trigger-list" id="trigger-list"></div>
+  </div>
+
+  <!-- SECTION 12: Negotiation -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">12</div>
+      <div>
+        <div class="section-title">Negotiation Cues</div>
+        <div class="section-sub">Leverage built from what you found</div>
+      </div>
+    </div>
+    <div class="neg-grid" id="neg-grid"></div>
+    <div class="tip-box" style="margin-top:0"><strong>Use your notes as leverage.</strong> Every flagged item on this playbook is a documented negotiation point. Total the estimated repair costs, then subtract from ask price — show the math.</div>
+  </div>
+
+</main>
+
+<div class="summary-bar">
+  <div class="summary-bar-inner">
+    <div class="summary-pill">
+      <div class="summary-dot dot-done"></div>
+      <span id="sum-done">0 checked</span>
+      <div class="summary-dot dot-flag"></div>
+      <span id="sum-flag">0 flagged</span>
+      <span style="color:var(--text-mute);font-size:11px" id="sum-score"></span>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>© Trail Manual, 2026 — Built for buyers, not dealers.</p>
+  <p style="font-size:11px;margin-top:4px">Inspection protocol based on Consumer Reports, KBB, CarEdge, Bumper, and mechanic-sourced guidelines.</p>
+</footer>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────────────────────
+
+const PRE_ITEMS = [
+  { id:'pre1', title:'Pull Carfax or AutoCheck report', sub:'Check accident history, ownership count, and title status', detail:'Look for: salvage title, rebuilt title, flood damage, lemon law buyback, or odometer rollback flags. More than 2 previous owners in 5 years is worth noting. If the seller won\'t pay for a Carfax, that\'s a yellow flag.', models:[] },
+  { id:'pre2', title:'Research recall & TSB history', sub:'NHTSA.gov — free lookup by VIN or make/model/year', detail:'Unresolved safety recalls must be fixed free by dealers. Check nhtsa.gov/recalls. TSBs (Technical Service Bulletins) show common known issues the manufacturer acknowledged — they don\'t require free repairs but tell you what to watch for on the test drive.', models:[] },
+  { id:'pre3', title:'Look up market value', sub:'KBB private party vs. dealer retail — know both', detail:'KBB Private Party Fair Condition gives you your walk-away number. Dealer retail is 10–20% higher — don\'t negotiate from dealer retail when you\'re buying from a private seller. Bring the printout.', models:[] },
+  { id:'pre4', title:'Research model-specific problems', sub:'CarComplaints.com + RepairPal common problems', detail:'Know the top 3–5 known failure patterns for this exact make/model/year-range before you arrive. The Red Flags section below covers the five seed models in this tool.', models:[] },
+];
+
+const EXTERIOR_ITEMS = [
+  { id:'ext1', title:'Panel gap walk — all four sides', sub:'Even gaps = factory; uneven = repaired', detail:'Stand at each corner. Crouch and sight along the body panel lines. Gaps should be perfectly even top-to-bottom and front-to-back. Any tapering, closing, or widening indicates a replacement panel or pull. Also check that plastic trim/moldings are flush — pulled panels often leave trim slightly off.', models:[] },
+  { id:'ext2', title:'Paint texture and color consistency', sub:'Check in natural light — not inside, not at night', detail:'Repainted panels often show a slightly different texture (more orange-peel) than factory paint. Under bright natural light, sight along the body — variations in gloss or texture reveal sprayed areas. Also look for paint overspray inside door jambs, on rubber seals, on plastic trim, and under the hood opening edge.', models:[] },
+  { id:'ext3', title:'Hinge bolt paint witness marks', sub:'Factory bolts have paint on them; replaced panels don\'t', detail:'Open the hood, doors, and trunk/hatch. Look at the hinge mounting bolts. On an unrepaired car, the bolt heads have the same paint coat as everything else. If a bolt head is bare metal, or shows a different finish, the hinge was removed — which means the panel was replaced.', models:[] },
+  { id:'ext4', title:'Glass for chips, cracks, and delamination', sub:'Windshield chips = cheap; cracks = expensive', detail:'A windshield chip costs $50–120 to fill. A crack — especially any crack over 6 inches, or one in the driver\'s sight line — means full replacement ($200–600+). Also check side windows for delamination (a haze or bubble pattern at the edges). Check rear defrost grid integrity.', models:[] },
+  { id:'ext5', title:'Exterior lights — all of them', sub:'Walk around with lights on: brake, reverse, signal, fog', detail:'Ask the seller to turn on headlights while you walk around. Then check: brake lights (lean on brake), reverse lights (put in reverse), all four turn signals, hazards, fog lights if equipped. A single burned bulb is trivial; multiple burned bulbs suggest deferred maintenance across the board.', models:[] },
+  { id:'ext6', title:'Rust — rocker panels, wheel arches, tailgate', sub:'Surface rust vs. structural rust — very different', detail:'Surface rust (orange surface staining, no pitting) on underbody steel is normal on older cars. Structural rust (holes, soft spots, flaking from inside out) on frame rails, rocker panels, and wheel arches is a deal-killer. Press with your thumb on any suspicious area — soft = cancer. Use your phone camera light to look inside wheel arches.', models:['tacoma'], modelNote:'Tacoma: Check 1995–2015 frame rails specifically — Toyota issued a frame rust recall. Press a screwdriver into the frame where it meets the cab.' },
+  { id:'ext7', title:'Door seals and weatherstripping', sub:'Brittle or compressed = water leaks and noise', detail:'Run your hand along all four door seals. They should feel pliable and springy. Hard, brittle, or compressed seals leak water and wind noise. In hot climates, rubber degrades faster — check for cracking and brittleness. Open each door fully and close — a dull "thud" vs. a hollow tin sound tells you a lot.', models:[] },
+];
+
+const ENGINE_ITEMS = [
+  { id:'eng1', title:'Fluid levels and condition', sub:'Oil, coolant, trans fluid, brake fluid, power steering', detail:'Check oil: dipstick should read between min/max; color should be amber-to-brown (black is OK for diesel, means overdue change for gas engines). Check coolant reservoir — should be green/orange/pink depending on spec, never milky (= head gasket). Brake fluid should be clear to light yellow. Auto trans fluid should be pink/red and NOT smell burnt.', models:['outback'], modelNote:'Subaru Outback: Check oil cap underside for white mayo-like buildup — classic head gasket leak symptom. Also check coolant for oil sheen.' },
+  { id:'eng2', title:'Coolant for oil contamination (milky look)', sub:'Milky coolant = head gasket failure or cracked block', detail:'Remove the radiator cap (ONLY when the engine is cold). Look at the inside of the cap and the coolant itself. Milky-brown or foamy coolant means oil is mixing with coolant — classic blown head gasket. A blown head gasket is $1,200–3,000+ to repair and is a walk-away trigger on most budget buys.', models:['outback','civic'], modelNote:'Subaru/Honda: Head gasket failures are known patterns for these models — treat coolant inspection as mandatory.' },
+  { id:'eng3', title:'Oil cap underside for white sludge', sub:'White mayo texture = coolant in oil = head gasket', detail:'Twist off the oil filler cap. Look at the underside. Clean engine = clean cap. White or creamy residue = coolant intrusion. A small amount of condensation buildup (gray, not white) on a car driven mostly short trips is less concerning but still note it.', models:['outback'] },
+  { id:'eng4', title:'Battery age sticker', sub:'Check the date code on the label', detail:'Most batteries have a date code stamped on the top or side label (e.g., "23/04" = April 2023). In Phoenix, batteries last an average of 2–3 years vs. 4–5 elsewhere. A 3+ year old battery in Phoenix is near end of life — budget $150–250 for replacement. Ask if it\'s been replaced.', models:[] },
+  { id:'eng5', title:'Belts and hoses — condition check', sub:'Cracking, glazing, or hardness = near-failure', detail:'Run your fingers along accessible serpentine belts — they should feel flexible with no cracking. Squeeze coolant hoses (again, cold engine only) — they should give slightly, not feel rock-hard or collapse easily. Hard hoses = brittle and near-failure. Also check for evidence of past belt replacement (coolant may smell like coolant additive if timing belt area was recently serviced).', models:[] },
+  { id:'eng6', title:'Vacuum for leaks — listen at idle', sub:'Hissing sound from engine bay = vacuum leak', detail:'Once the engine is running, listen for any hissing sound from the engine bay. This indicates a vacuum leak — cracked vacuum hoses or intake manifold gaskets. Common on high-mileage cars and causes rough idle, check engine lights, and poor fuel economy. Small leaks are cheap; large ones can be complex.', models:[] },
+  { id:'eng7', title:'Cold start — smoke, knock, rough idle', sub:'Start it yourself, watch for 60 seconds', detail:'The most revealing 60 seconds of the inspection. Blue smoke from the exhaust = burning oil (worn rings or valve seals). White smoke on a warm day = coolant leak. A single puff of white on a cold morning = normal condensation. A knock or tick on startup that fades = valve lash (minor); a knock that stays = rod knock (serious). Rough idle that smooths out = likely minor; rough idle that persists = fuel/air/ignition issues.', models:[] },
+  { id:'eng8', title:'Check engine light and dash warning lights', sub:'All lights should illuminate on key-on, then go out', detail:'Turn the key to "on" (don\'t start yet). Every warning light should illuminate briefly — this confirms they work. Now start: all lights should go out within 5–10 seconds. Any light that stays on = active fault code. Ask to run an OBD-II scanner (AutoZone does it free). If a code was recently cleared to hide it, the readiness monitors will show "not ready" — a dealer trick.', models:[] },
+];
+
+const INTERIOR_ITEMS = [
+  { id:'int1', title:'All seat controls, recline, memory', sub:'Manual or power — test full travel each direction', detail:'Broken seat tracks and recline mechanisms are surprisingly expensive to fix ($200–500) and suppliers can be scarce on older vehicles. Test every direction of travel on all seats you\'ll use. Check for unusual wear or tear in areas that don\'t match the mileage.', models:[] },
+  { id:'int2', title:'HVAC — heat, AC, all fan speeds, all vents', sub:'AC is non-negotiable in hot climates', detail:'Turn AC to coldest setting and highest fan speed. Let it run 5–10 minutes and feel the vent temp — should be 40–45°F at the vent in moderate weather. In Phoenix, a marginal AC system passes a 75°F day but fails at 110°F. Test all speeds (look for broken fan resistor at speeds 1–3 working but not 4). Test heat, too — blend doors fail and are expensive to access.', models:[] },
+  { id:'int3', title:'All windows — up, down, all switches', sub:'Test from driver\'s switch and individual door switches', detail:'Window regulator failures are common, especially on cars over 100k miles. Test all four windows from the driver\'s master switch AND from each individual door switch. A window that works from one but not the other has a failing switch (cheap) vs. a failing regulator (less cheap, ~$150–300/window).', models:[] },
+  { id:'int4', title:'Infotainment, Bluetooth, reverse camera', sub:'Factory systems vary widely in repairability', detail:'Factory nav/infotainment touchscreens on older vehicles can be very expensive to replace ($500–2000+) and often can\'t be repaired. Test: touch responsiveness, Bluetooth pairing, USB, backup camera image quality (should be clear, not washed out or glitchy). Note: aftermarket head units are OK and often better — just confirm the backup camera still functions.', models:[] },
+  { id:'int5', title:'Odor — musty, mildew, chemical masking', sub:'Smell before you look', detail:'Step in and take a breath before you see anything. Musty odor = water intrusion (flood damage, leaking seals, drain plugs). Heavy air freshener use can mask odors — this is a seller tell. Chemical smell = recent cleaning or Febreze applied liberally. Check door sill drains are open and look for staining under floor mats.', models:[] },
+  { id:'int6', title:'Dashboard for cracks and heat damage', sub:'Especially in hot climates', detail:'UV and heat damage to dashboards is severe in hot climates. Cracked dashboards are cosmetically ugly but also a negotiation point. A dash cap costs $150–300; a full replacement dash can be $500–1200+. In Phoenix, expect some wear on 10+ year old cars — but significant cracking on a newer car suggests hard outdoor storage or a damaged defroster.', models:[] },
+];
+
+const TIRES_ITEMS = [
+  { id:'tire1', title:'Tread depth — all four corners', sub:'Quarter test: Washington\'s head = 4/32" remaining', detail:'Insert a quarter into the tread with Washington\'s head down. If you can see the top of his head, you have less than 4/32" — time to replace (legally ~2/32"). Budget: $150–250/tire for mid-range, $800–1200 for a full set of four. Also check that all four tires are the same brand and roughly the same wear — mismatched tires suggest deferred maintenance.', models:[] },
+  { id:'tire2', title:'Sidewall cracks and bulges', sub:'Dry rot and bulges = immediate replacement', detail:'Look for spiderweb cracking along the sidewall — this is dry rot, common in hot climates and on cars that sit. A bulge or bubble on the sidewall is a structural failure and means the tire is dangerous. Either condition means you\'re negotiating for new tires or walking away from a car at ask price.', models:[] },
+  { id:'tire3', title:'Wear patterns — even vs. cupped/feathered', sub:'Uneven wear reveals alignment and suspension problems', detail:'Even wear across the full tread width = healthy. Edge wear on both sides = over-inflation history. Center wear = under-inflation. One-edge wear = alignment problem (camber). Feathered or cupped wear (scalloping) = worn shocks/struts or aggressive driving. An alignment is $80–120; worn struts are $400–1000 per axle installed.', models:[] },
+  { id:'tire4', title:'Brake rotors — look through the spokes', sub:'Grooves, rust lips, and thickness', detail:'Look at the rotor face through the wheel spokes. A light rust surface coat is normal if the car sat a few days. Deep grooves or scoring = worn pads grinding on rotors (both need replacement). A thick rust lip at the outer edge = car hasn\'t been driven much or pads are very worn. Front brakes budget $200–350 axle installed; rear $150–300.', models:[] },
+];
+
+const UNDER_ITEMS = [
+  { id:'und1', title:'Frame and unibody for damage or rust', sub:'Use phone camera flashlight in tight spots', detail:'Look for: welds that don\'t match the factory pattern (= repair after collision), fresh undercoating sprayed only on certain areas (= hiding something), and rust penetrating through to the other side. For body-on-frame trucks, check frame rails where they pass under the cab.', models:['tacoma'], modelNote:'Tacoma: Known frame rust issue, especially 1995–2015. Push a screwdriver into the frame — it should not penetrate. Toyota issued a recall; check if VIN was remediated at NHTSA.gov.' },
+  { id:'und2', title:'Oil pan and transmission pan for leaks', sub:'Fresh oil on the underside = active leak', detail:'Look at the bottom of the engine and transmission. Fresh, wet oil — especially with road grime stuck to it — is an active leak. A leak from the oil pan gasket is cheaper ($150–300). A leak from the rear main seal ($400–800 including labor to pull the transmission) or transmission pan ($200–400) is more involved. Dried oil staining without wet is less urgent but note it.', models:[] },
+  { id:'und3', title:'Exhaust system — rust and patches', sub:'Look for clamps, patches, or sections that don\'t match', detail:'Follow the exhaust pipe from the engine to the tail pipe. Look for: rust-through holes, mismatched replacement sections, and band-clamp patches (the cheap quick fix). A full exhaust replacement can run $500–1500 depending on whether the cat needs replacement (cats are expensive due to precious metals). Light rust on the muffler is normal; rusted-through sections are not.', models:[] },
+  { id:'und4', title:'CV axles and boots — torn or greasy', sub:'Torn boots = eventual CV failure', detail:'Look at the axle shafts between the wheels and the differential. The rubber CV boots should be intact with no cracking, tears, or grease splatter. A torn boot eventually leads to a failed CV joint ($250–500 axle installed). Grease sprayed on the inside of the wheel well near the axle is a definitive torn boot indicator.', models:[] },
+  { id:'und5', title:'Shocks and struts — leaking', sub:'Oil on the shock body = blown', detail:'Look at the shock/strut body — it should be dry. Oil weeping or streaming from the shock body = blown shock. Blown shocks cause poor handling, longer stopping distances, and tire cupping. Budget $400–1000 per axle installed for quality struts on common vehicles.', models:[] },
+];
+
+const MANEUVERS = [
+  { id:'m1', letter:'A', name:'Baseline Brake Test', speed:'35–45 mph → 0', desc:'Find an empty stretch. Moderate, deliberate stop from 35–45 mph. Feel for: consistent pedal pressure, pulling to one side, vibration or pulsation through the pedal.', look:'Pulling = seized caliper or warped rotor. Pulsation = warped rotor. Long travel before bite = worn pads or air in line.' },
+  { id:'m2', letter:'B', name:'Firm Brake Test', speed:'45 mph → 0, firm pressure', desc:'Same speed, apply firm (not emergency) pressure. Feel for: pedal fade on the long stop, brake dust smell after, any squeal pattern.', look:'Fade = worn pads or glazed rotors. Squeal that persists after cooling = worn indicator tabs.' },
+  { id:'m3', letter:'C', name:'Emergency Stop', speed:'40 mph → 0, parking lot', desc:'In a safe empty lot: emergency application from 40 mph. ABS should activate (vibrating pedal is normal). Car should track straight, not pull dramatically.', look:'Strong pull = seized caliper or unbalanced brake force. No ABS activation when expected = ABS fault code.' },
+  { id:'m4', letter:'D', name:'Highway Merge / Load Test', speed:'0 → 60–65 mph merge', desc:'Find a freeway on-ramp or long straight. Full-throttle merge. Listen for: transmission shift smoothness under load, any hesitation or stumble, turbo lag patterns if turbocharged.', look:'Harsh or delayed upshift = worn transmission. Stumble under load = fuel delivery or ignition issue. Excessive turbo lag on a modern turbo engine = boost system issues.' },
+  { id:'m5', letter:'E', name:'Highway Coast', speed:'60 mph, lift throttle', desc:'At highway speed, lift off the throttle completely without braking. Coast for 30 seconds. No steering, no braking.', look:'Shudder or vibration while coasting = drivetrain imbalance, worn U-joint, or driveshaft issue. Pulling while coasting = alignment or brake drag.' },
+  { id:'m6', letter:'F', name:'Full-Lock Circles', speed:'5–10 mph, parking lot', desc:'Turn steering wheel to full lock, drive slow circles both directions. Listen for clicks from the front axle area. Also test: power steering whine at full lock.', look:'Clicking at full lock = worn CV joint (costly). Power steering whine at lock = low fluid or pump wear.' },
+];
+
+const QUESTIONS = [
+  { id:'q1', q:'Why are you selling?', why:'Establishes framing. Note if the answer is vague, changes between call and in-person, or mentions urgency. Common honest answers: upgraded, lifestyle change, moving, financial. Suspicious: "runs great, just don\'t need it" on a car with obvious deferred maintenance.' },
+  { id:'q2', q:'Are you the original owner? If not, how many owners total?', why:'Fewer owners = more continuous maintenance history. 3+ owners in 5 years suggests the car had problems that caused people to sell. Cross-check against the Carfax report.' },
+  { id:'q3', q:'Do you have maintenance records or service receipts?', why:'Records prove the service was done. Missing records don\'t mean it wasn\'t done — but they remove your ability to verify. Look for: oil change cadence (every 3k–10k depending on spec), timing belt/chain service if applicable, major repairs.' },
+  { id:'q4', q:'Has it been in any accidents? Any panels repaired or replaced?', why:'You want them to disclose before you find it. Cross-check against the Carfax report and your visual walk-around. If they say no but you found paint witness marks or mismatched panel gaps, that\'s a direct contradiction.' },
+  { id:'q5', q:'Are there any current mechanical issues, leaks, or warning lights?', why:'Ask this directly. In many states, a private seller has some disclosure obligation — but it varies. A seller who says "nothing, runs perfect" on a car with obvious issues is telling you something about their character.' },
+  { id:'q6', q:'Do you have the title in hand, and is it clean (not salvage or rebuilt)?', why:'Walk away if: no title in hand (you can\'t register it without one, and it\'s a scam risk), salvage or rebuilt title (insurance and resale are both affected), or any lien showing on the title (the bank hasn\'t been paid and technically the car isn\'t theirs to sell).' },
+  { id:'q7', q:'Would you be open to a pre-purchase inspection at my mechanic?', why:'The single highest-signal question. Honest sellers with nothing to hide say yes immediately. A flat "no" is a red flag. "I don\'t have time" is a yellow flag. A seller who agrees but wants to drive to the shop themselves (vs. you driving it) is trying to prevent a cold-start inspection.' },
+];
+
+const MODEL_FLAGS = {
+  tacoma: {
+    name:'Toyota Tacoma',
+    years:'2005–2023',
+    flags:[
+      '1995–2015 frame rust — confirmed with screwdriver test. Toyota recall covered some VINs; verify at NHTSA.gov',
+      '2016+ automatic transmission: harsh/delayed upshift under load — known issue, TSB exists',
+      'Leaf spring rear end: check for sagging (measure bed height relative to cab)',
+      'High-mileage Tacomas command a premium — verify the price makes sense for condition',
+      '3rd gen (2016+): check for active grill shutter fault codes if equipped',
+    ]
+  },
+  civic: {
+    name:'Honda Civic',
+    years:'2006–2015',
+    flags:[
+      '2001–2005 automatics: notorious transmission failures at 100k+ — check fluid color and smell, confirm smooth shifts',
+      '2017+ 1.5T (Turbo): oil dilution issue — gasoline mixes with oil in cold climates. Check dipstick for high oil level and fuel smell',
+      'Check all four door seals for compression — water intrusion into fenders is common on high-mileage civics',
+      'AC condenser: prone to road debris puncture especially on coupes — confirm cold air after 10 min',
+      'Exhaust manifold heat shield rattles are very common, not structural but annoying',
+    ]
+  },
+  outback: {
+    name:'Subaru Outback',
+    years:'2010–2019',
+    flags:[
+      'Head gasket failure: EJ engine family (pre-2011) notorious for it — check oil cap for white mayo, coolant for milky color',
+      'Check CVT transmission fluid (if equipped) — dark or burnt smell = CVT wear',
+      'Wheel bearing failures are common after 80k — listen for hum that changes with steering input at highway speed',
+      'Check for OBD codes related to knock sensor and cam/crank sensors — expensive on the FB engine',
+      '2013–2017 eyesight camera: check calibration and function — replacement is $1500+',
+    ]
+  },
+  jk: {
+    name:'Jeep Wrangler JK',
+    years:'2007–2018',
+    flags:[
+      'Death wobble: steering that oscillates violently above 45 mph, usually at highway speed over a bump. Feel for it on the highway merge maneuver',
+      '3.6 Pentastar oil cooler housing: coolant and oil mixing — check for leaks near the back of the engine block',
+      'Check transfer case for unusual noise in 4WD mode — actuator and encoder motor failures common',
+      'Freedom top panels: check that all latches secure and clips aren\'t broken — replacements are expensive',
+      'Check for aftermarket lift kit installation quality — look for bump steer and death wobble history',
+    ]
+  },
+  f150: {
+    name:'Ford F-150',
+    years:'2009–2023',
+    flags:[
+      '2011–2014 EcoBoost (3.5T): carbon buildup on intake valves — common on DI engines. Rough idle, hesitation symptoms',
+      '5.4L 3-valve (2004–2010): cam phaser tick on startup. Listen for tick that fades after 30 seconds — budget for phaser replacement',
+      'Check aluminum body panels (2015+) for damage repair — aluminum repairs are much more expensive than steel',
+      'Spark plug blowout: 4.6/5.4 triton engines — check for rough idle and check engine light',
+      'Ford SYNC 1/2 infotainment: check all functions. Module replacements are expensive.',
+    ]
+  },
+  generic: {
+    name:'All Vehicles',
+    years:'General',
+    flags:[
+      'Timing belt/chain: know the service interval for this engine. A missed timing belt is a walk-away condition on interference engines',
+      'OBD-II readiness monitors: check with a scanner — "not ready" monitors suggest codes were recently cleared',
+      'Check for frame or subframe collision damage on any unibody vehicle',
+      'Automatic transmission fluid: should be pink/red and NOT smell burnt',
+      'Verify the VIN on the dash, door jamb sticker, and engine block match each other and the title',
+    ]
+  }
+};
+
+const CLIMATE_CHECKS_HOT = [
+  { id:'cl1', title:'Dashboard for UV cracking', detail:'Significant cracking on vehicles under 10 years old suggests extreme outdoor storage or defroster failure.' },
+  { id:'cl2', title:'Battery date code — over 3 years old?', detail:'Phoenix heat kills batteries in 3 years on average vs. 4–5 elsewhere. Budget $150–250 for replacement if near or past 3 years.' },
+  { id:'cl3', title:'Door/window rubber seal brittleness', detail:'Press and squeeze door seals. Brittle, hard, or cracked seals mean water and wind intrusion. Common after 8+ years in Phoenix.' },
+  { id:'cl4', title:'Tire sidewall dry rot', detail:'Look for spider-web cracking on sidewalls — heat accelerates dry rot. Tires may have 50% tread but be structurally compromised.' },
+  { id:'cl5', title:'AC condenser fins for debris damage', detail:'Check the front of the AC condenser (behind the grille) for bent or clogged fins from desert debris. A damaged condenser reduces AC capacity significantly.' },
+  { id:'cl6', title:'AC blows cold after 10+ minutes — full temp test', detail:'Run AC at max cold/max fan for the entire test drive. Marginal AC systems fail at 110°F even if they feel OK at 85°F.' },
+  { id:'cl7', title:'Interior plastic for heat warping', detail:'Check cup holders, door handles, glove box latch, and center console. Warped plastic is cosmetic but indicates the car spent significant time in direct sun.' },
+];
+
+const CLIMATE_CHECKS_COLD = [
+  { id:'cl1', title:'Undercarriage rust from road salt', detail:'Thoroughly inspect all metal surfaces underneath for rust-through. Salt belt states (NY, OH, MI, IL, etc.) have significantly accelerated frame rust timelines.' },
+  { id:'cl2', title:'Rocker panel rust — outer and inner', detail:'The lower edge of the rocker panels is the first place salt rust appears. Tap with a knuckle — a hollow thud vs. solid indicates rotted metal.' },
+  { id:'cl3', title:'Wheel arch rust', detail:'Inner and outer wheel arches rust from accumulated snow and salt. Check with a flashlight inside the arch liner.' },
+  { id:'cl4', title:'Brake lines for rust/pitting', detail:'Follow the brake lines from front to rear. Small diameter tubing corrodes from salt — failure is catastrophic.' },
+  { id:'cl5', title:'Frame rails for structural rust', detail:'Especially critical on trucks and body-on-frame SUVs. Use screwdriver test on any suspect area.' },
+  { id:'cl6', title:'Cold start performance', detail:'In cold climates, cold-start performance is especially diagnostic. Listen for extended crank time, rough idle, or unusual smoke.' },
+  { id:'cl7', title:'AWD/4WD engagement in snowy-use vehicle', detail:'If this car was used in snow conditions, confirm 4WD/AWD engages and disengages cleanly. Check for grinding or clunking on engagement.' },
+];
+
+const CLIMATE_CHECKS_GENERIC = [
+  { id:'cl1', title:'All rubber seals for integrity', detail:'Door seals, window seals, and trunk seals should feel pliable and spring back when compressed.' },
+  { id:'cl2', title:'Undercarriage for oil and fluid leaks', detail:'Look for fresh fluid on the underside — particularly at pan gaskets, axle seals, and shock bodies.' },
+  { id:'cl3', title:'Battery condition — visual and date', detail:'Check for corrosion on terminals and get the date code. Replace if over 5 years old.' },
+];
+
+const WALK_AWAY = [
+  { icon:'🚫', strong:'Seller refuses a PPI', detail:'If they say no to a pre-purchase inspection at your mechanic, assume they know something you don\'t. Walk away.' },
+  { icon:'📄', strong:'Title not in hand or not clean', detail:'Salvage, rebuilt, flood, or lemon law title. Or a lien not yet paid off. None of these are your problem to solve.' },
+  { icon:'🔄', strong:'Story changes between call and in-person', detail:'Different mileage, different ownership history, different accident history. A change = a lie. Walk away.' },
+  { icon:'⏰', strong:'Seller creates urgency', detail:'"Another buyer is coming this afternoon." "I have three other people interested." A legitimate seller doesn\'t need to pressure you.' },
+  { icon:'📊', strong:'Carfax contradicts seller\'s claimed history', detail:'The vehicle history report is not perfect, but direct contradiction between the report and the seller\'s statements means someone is lying.' },
+];
+
+const NEG_CARDS = [
+  { label:'Opening Move', title:'Ask for their best price first', body:'Start with: "What\'s the best you can do on this?" — especially with private sellers. You\'re inviting them to negotiate against themselves. Whatever they say becomes your new ceiling.' },
+  { label:'The Silent Walk-Around', title:'Take a second lap, say nothing', body:'After you\'ve reviewed everything: walk the car a second time, deliberately quiet, with a small notepad. Note every flaw out loud to yourself. Sellers fill the silence by explaining, excusing, and softening the price.' },
+  { label:'Repair Math', title:'Total your flagged items', body:'Every flagged item on this checklist is a documented repair cost. Add them up, show your phone calculator, and subtract from the ask: "I found $800 in deferred maintenance — I can do $X." This anchors the conversation.' },
+  { label:'Dealer Walk-Away', title:'Walk — but leave the door open', body:'The single most powerful move with a dealer. Leave. Text them 24 hours later: "I\'m still looking, but if you can do $X, I can come back tomorrow." They need to move metal. You don\'t need this car.' },
+  { label:'Private Seller Floor', title:'KBB Private Party Fair Condition', body:'Your walk-away number is KBB Private Party in Fair condition. Condition = Fair when there are multiple deferred maintenance items. Don\'t pay Good condition prices for Fair condition cars.' },
+  { label:'PPI Result Leverage', title:'Use the mechanic\'s findings', body:'If the PPI turns up issues, get the shop to write an estimate. Bring it back to the seller: "My mechanic found $1,400 in work. I\'m still interested but my offer has to reflect that." Written estimates carry authority.' },
+];
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+const state = {};
+let currentModel = 'generic';
+let currentClimate = 'hot';
+
+// ─── RENDER ──────────────────────────────────────────────────────────────────
+function renderChecklist(items, containerId) {
+  const el = document.getElementById(containerId);
+  el.innerHTML = '';
+  items.forEach(item => {
+    const s = state[item.id] || { done: false, flagged: false, note: '' };
+    const showModelFlag = item.models.length > 0 && item.models.includes(currentModel);
+    const div = document.createElement('div');
+    div.className = 'check-item' + (s.done ? ' done' : '') + (s.flagged ? ' flagged' : '');
+    div.id = 'ci-' + item.id;
+    div.innerHTML = `
+      <div class="check-head" onclick="toggleExpand('${item.id}','${containerId}')">
+        <div class="check-box">${s.done ? '✓' : s.flagged ? '!' : ''}</div>
+        <div>
+          <div class="check-title">${item.title}${showModelFlag ? `<span class="model-flag">⚠ ${MODEL_FLAGS[currentModel]?.name||''}</span>` : ''}</div>
+          ${item.sub ? `<div class="check-sub">${item.sub}</div>` : ''}
+        </div>
+        <div class="check-expand">▶</div>
+      </div>
+      <div class="check-body">
+        <p>${item.detail}</p>
+        ${showModelFlag && item.modelNote ? `<div class="warn-box" style="margin-top:10px"><strong>⚠ ${MODEL_FLAGS[currentModel]?.name||''} Note:</strong> ${item.modelNote}</div>` : ''}
+        <div class="check-actions">
+          <button class="action-btn good-btn${s.done ? ' active' : ''}" onclick="markDone('${item.id}','${containerId}',event)">✓ Good</button>
+          <button class="action-btn bad-btn${s.flagged ? ' active' : ''}" onclick="markFlag('${item.id}','${containerId}',event)">⚑ Flag Issue</button>
+          <button class="action-btn" onclick="clearItem('${item.id}','${containerId}',event)">✕ Clear</button>
+        </div>
+        <div class="check-note">
+          <textarea placeholder="Note (optional)..." onchange="saveNote('${item.id}',this.value)">${s.note}</textarea>
+        </div>
+      </div>`;
+    el.appendChild(div);
+  });
+}
+
+function renderManeuvers() {
+  const el = document.getElementById('maneuver-grid');
+  el.innerHTML = '';
+  MANEUVERS.forEach(m => {
+    const s = state[m.id] || { done: false };
+    const div = document.createElement('div');
+    div.className = 'maneuver' + (s.done ? ' done' : '');
+    div.onclick = () => toggleManeuver(m.id);
+    div.innerHTML = `
+      <div class="maneuver-head">
+        <div class="maneuver-letter">${s.done ? '✓' : m.letter}</div>
+        <div>
+          <div class="maneuver-name">${m.name}</div>
+          <div class="maneuver-speed">${m.speed}</div>
+        </div>
+      </div>
+      <div class="maneuver-desc">${m.desc}</div>
+      <div class="maneuver-look">👁 Look for: ${m.look}</div>`;
+    el.appendChild(div);
+  });
+}
+
+function renderQuestions() {
+  const el = document.getElementById('question-list');
+  el.innerHTML = '';
+  QUESTIONS.forEach((q, i) => {
+    const s = state[q.id] || { asked: false, redflag: false };
+    const div = document.createElement('div');
+    div.className = 'question' + (s.asked ? ' asked' : '') + (s.redflag ? ' redflag' : '');
+    div.innerHTML = `
+      <div class="q-num">Question ${i+1}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="q-why">${q.why}</div>
+      <div class="q-actions">
+        <button class="q-btn green${s.asked ? ' active' : ''}" onclick="markQuestion('${q.id}','asked',event)">✓ Asked — good answer</button>
+        <button class="q-btn red${s.redflag ? ' active' : ''}" onclick="markQuestion('${q.id}','redflag',event)">⚑ Red flag answer</button>
+        <button class="q-btn" onclick="clearQuestion('${q.id}',event)">Clear</button>
+      </div>`;
+    el.appendChild(div);
+  });
+}
+
+function renderFlags() {
+  const el = document.getElementById('flag-grid');
+  el.innerHTML = '';
+  const order = ['tacoma','civic','outback','jk','f150','generic'];
+  order.forEach(key => {
+    const m = MODEL_FLAGS[key];
+    if (!m) return;
+    const active = key === currentModel || (currentModel === 'generic' && key === 'generic');
+    const div = document.createElement('div');
+    div.className = 'flag-card' + (active ? ' active-model' : '');
+    div.innerHTML = `<h3>${active ? '⭐ ' : ''}${m.name} <span style="font-size:11px;color:var(--text-mute);font-weight:400">${m.years}</span></h3><ul>${m.flags.map(f => `<li>${f}</li>`).join('')}</ul>`;
+    el.appendChild(div);
+  });
+}
+
+function renderTriggers() {
+  const el = document.getElementById('trigger-list');
+  el.innerHTML = WALK_AWAY.map(t => `
+    <div class="trigger">
+      <div class="trigger-icon">${t.icon}</div>
+      <div class="trigger-text"><strong>${t.strong}</strong><span>${t.detail}</span></div>
+    </div>`).join('');
+}
+
+function renderNegotiation() {
+  const el = document.getElementById('neg-grid');
+  el.innerHTML = NEG_CARDS.map(c => `
+    <div class="neg-card">
+      <div class="nc-label">${c.label}</div>
+      <h3>${c.title}</h3>
+      <p>${c.body}</p>
+    </div>`).join('');
+}
+
+function renderClimate() {
+  const checks = currentClimate === 'hot' ? CLIMATE_CHECKS_HOT : currentClimate === 'cold' ? CLIMATE_CHECKS_COLD : CLIMATE_CHECKS_GENERIC;
+  const titleEl = document.getElementById('climate-title');
+  const subEl = document.getElementById('climate-sub');
+  if (currentClimate === 'hot') {
+    titleEl.textContent = 'Phoenix / Desert Heat Checks';
+    subEl.textContent = 'Extra checks for hot-climate vehicles';
+  } else if (currentClimate === 'cold') {
+    titleEl.textContent = 'Cold Climate / Salt Belt Checks';
+    subEl.textContent = 'Extra checks for rust-belt and cold-weather vehicles';
+  } else {
+    titleEl.textContent = 'Climate-Specific Checks';
+    subEl.textContent = 'Additional checks for your region';
+  }
+  const el = document.getElementById('climate-content');
+  el.innerHTML = `<div class="climate-checks">${checks.map(c => {
+    const s = state['climate_'+c.id] || { done: false };
+    return `<div class="climate-check${s.done ? ' done' : ''}" onclick="toggleClimate('${c.id}')">
+      <div class="climate-cb">${s.done ? '✓' : ''}</div>
+      <div class="climate-body"><strong>${c.title}</strong><span>${c.detail}</span></div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function renderAll() {
+  renderChecklist(PRE_ITEMS, 'pre-list');
+  renderChecklist(EXTERIOR_ITEMS, 'exterior-list');
+  renderChecklist(ENGINE_ITEMS, 'engine-list');
+  renderChecklist(INTERIOR_ITEMS, 'interior-list');
+  renderChecklist(TIRES_ITEMS, 'tires-list');
+  renderChecklist(UNDER_ITEMS, 'under-list');
+  renderClimate();
+  renderManeuvers();
+  renderQuestions();
+  renderFlags();
+  renderTriggers();
+  renderNegotiation();
+  updateProgress();
+}
+
+// ─── INTERACTIONS ─────────────────────────────────────────────────────────────
+function toggleExpand(id, containerId) {
+  const el = document.getElementById('ci-' + id);
+  el.classList.toggle('open');
+}
+
+function markDone(id, containerId, e) {
+  e.stopPropagation();
+  if (!state[id]) state[id] = {};
+  state[id].done = !state[id].done;
+  state[id].flagged = false;
+  renderChecklist(getItemsForContainer(containerId), containerId);
+  updateProgress();
+}
+
+function markFlag(id, containerId, e) {
+  e.stopPropagation();
+  if (!state[id]) state[id] = {};
+  state[id].flagged = !state[id].flagged;
+  state[id].done = false;
+  renderChecklist(getItemsForContainer(containerId), containerId);
+  updateProgress();
+}
+
+function clearItem(id, containerId, e) {
+  e.stopPropagation();
+  if (!state[id]) state[id] = {};
+  state[id].done = false;
+  state[id].flagged = false;
+  renderChecklist(getItemsForContainer(containerId), containerId);
+  updateProgress();
+}
+
+function saveNote(id, val) {
+  if (!state[id]) state[id] = {};
+  state[id].note = val;
+}
+
+function toggleManeuver(id) {
+  if (!state[id]) state[id] = {};
+  state[id].done = !state[id].done;
+  renderManeuvers();
+  updateProgress();
+}
+
+function markQuestion(id, type, e) {
+  e.stopPropagation();
+  if (!state[id]) state[id] = {};
+  if (type === 'asked') { state[id].asked = !state[id].asked; state[id].redflag = false; }
+  else { state[id].redflag = !state[id].redflag; state[id].asked = false; }
+  renderQuestions();
+  updateProgress();
+}
+
+function clearQuestion(id, e) {
+  e.stopPropagation();
+  state[id] = { asked: false, redflag: false };
+  renderQuestions();
+  updateProgress();
+}
+
+function toggleClimate(id) {
+  const key = 'climate_' + id;
+  if (!state[key]) state[key] = {};
+  state[key].done = !state[key].done;
+  renderClimate();
+  updateProgress();
+}
+
+function getItemsForContainer(id) {
+  return { 'pre-list': PRE_ITEMS, 'exterior-list': EXTERIOR_ITEMS, 'engine-list': ENGINE_ITEMS, 'interior-list': INTERIOR_ITEMS, 'tires-list': TIRES_ITEMS, 'under-list': UNDER_ITEMS }[id] || [];
+}
+
+// ─── PROGRESS ─────────────────────────────────────────────────────────────────
+function updateProgress() {
+  const allChecklists = [...PRE_ITEMS, ...EXTERIOR_ITEMS, ...ENGINE_ITEMS, ...INTERIOR_ITEMS, ...TIRES_ITEMS, ...UNDER_ITEMS];
+  const climateChecks = currentClimate === 'hot' ? CLIMATE_CHECKS_HOT : currentClimate === 'cold' ? CLIMATE_CHECKS_COLD : CLIMATE_CHECKS_GENERIC;
+  let total = allChecklists.length + MANEUVERS.length + QUESTIONS.length + climateChecks.length;
+  let done = 0;
+  let flagged = 0;
+  allChecklists.forEach(item => {
+    const s = state[item.id] || {};
+    if (s.done) done++;
+    if (s.flagged) flagged++;
+  });
+  MANEUVERS.forEach(m => { if ((state[m.id] || {}).done) done++; });
+  QUESTIONS.forEach(q => { const s = state[q.id] || {}; if (s.asked || s.redflag) done++; if (s.redflag) flagged++; });
+  climateChecks.forEach(c => { if ((state['climate_' + c.id] || {}).done) done++; });
+
+  const pct = total > 0 ? Math.round(done / total * 100) : 0;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = `${done} of ${total} items complete`;
+  document.getElementById('sum-done').textContent = `${done} checked`;
+  document.getElementById('sum-flag').textContent = `${flagged} flagged`;
+  if (flagged > 0) {
+    document.getElementById('sum-score').textContent = `— ${flagged} issue${flagged > 1 ? 's' : ''} to discuss`;
+  } else {
+    document.getElementById('sum-score').textContent = pct === 100 ? '— All clear ✓' : '';
+  }
+}
+
+function resetAll() {
+  if (!confirm('Reset all checks and notes?')) return;
+  Object.keys(state).forEach(k => delete state[k]);
+  renderAll();
+}
+
+// ─── MODEL / CLIMATE ──────────────────────────────────────────────────────────
+function updateModel() {
+  currentModel = document.getElementById('model-select').value;
+  renderAll();
+}
+
+function updateClimate() {
+  currentClimate = document.getElementById('climate-select').value;
+  renderAll();
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+renderAll();
+</script>
+</body>
+</html>
